@@ -80,32 +80,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupDemo(int demoIndex)
 {
-//    demoIndex = 10;
-//  switch (demoIndex)
-//  {
-//    case 0:  setupQuadraticDemo(ui->customPlot); break;
-//    case 1:  setupSimpleDemo(ui->customPlot); break;
-//    case 2:  setupSincScatterDemo(ui->customPlot); break;
-//    case 3:  setupScatterStyleDemo(ui->customPlot); break;
-//    case 4:  setupScatterPixmapDemo(ui->customPlot); break;
-//    case 5:  setupLineStyleDemo(ui->customPlot); break;
-//    case 6:  setupDateDemo(ui->customPlot); break;
-//    case 7:  setupTextureBrushDemo(ui->customPlot); break;
-//    case 8:  setupMultiAxisDemo(ui->customPlot); break;
-//    case 9:  setupLogarithmicDemo(ui->customPlot); break;
-//    case 10: setupRealtimeDataDemo(ui->customPlot); break;
-//    case 11: setupParametricCurveDemo(ui->customPlot); break;
-//    case 12: setupBarChartDemo(ui->customPlot); break;
-//    case 13: setupStatisticalDemo(ui->customPlot); break;
-//    case 14: setupSimpleItemDemo(ui->customPlot); break;
-//    case 15: setupItemDemo(ui->customPlot); break;
-//    case 16: setupStyledDemo(ui->customPlot); break;
-//    case 17: setupAdvancedAxesDemo(ui->customPlot); break;
-//    case 18: setupColorMapDemo(ui->customPlot); break;
-//    case 19: setupFinancialDemo(ui->customPlot); break;
-//  }
-
-
     setupRealtimeDataDemo(ui->customPlot);
 
   ui->customPlot->replot();
@@ -160,6 +134,8 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
   // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
   connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
   dataTimer.start(0); // Interval 0 means to refresh as fast as possible
+
+  qDebug() << "seeeeetuuuuuuuup";
 }
 
 void MainWindow::ShowMessageBox(QString message)
@@ -181,4 +157,56 @@ void MainWindow::ShowMessageBox(QString message)
                          }\
                          ");
                          int ret = msgBox.exec();
+}
+
+
+
+
+void MainWindow::realtimeDataSlot()
+{
+  // calculate two new data points:
+#if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
+  double key = 0;
+#else
+  double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+#endif
+  static double lastPointKey = 0;
+  if (key-lastPointKey > 0.01) // at most add point every 10 ms
+  {
+    double value0 = qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
+    double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
+    // add data to lines:
+    ui->customPlot->graph(0)->addData(key, value0);
+    ui->customPlot->graph(1)->addData(key, value1);
+    // set data of dots:
+    ui->customPlot->graph(2)->clearData();
+    ui->customPlot->graph(2)->addData(key, value0);
+    ui->customPlot->graph(3)->clearData();
+    ui->customPlot->graph(3)->addData(key, value1);
+    // remove data of lines that's outside visible range:
+    ui->customPlot->graph(0)->removeDataBefore(key-8);
+    ui->customPlot->graph(1)->removeDataBefore(key-8);
+    // rescale value (vertical) axis to fit the current data:
+    ui->customPlot->graph(0)->rescaleValueAxis();
+    ui->customPlot->graph(1)->rescaleValueAxis(true);
+    lastPointKey = key;
+  }
+  // make key axis range scroll with the data (at a constant range size of 8):
+  ui->customPlot->xAxis->setRange(key+0.25, 8, Qt::AlignRight);
+  ui->customPlot->replot();
+
+  // calculate frames per second:
+  static double lastFpsKey;
+  static int frameCount;
+  ++frameCount;
+  if (key-lastFpsKey > 2) // average fps over 2 seconds
+  {
+    ui->statusBar->showMessage(
+          QString("%1 FPS, Total Data points: %2")
+          .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
+          .arg(ui->customPlot->graph(0)->data()->count()+ui->customPlot->graph(1)->data()->count())
+          , 0);
+    lastFpsKey = key;
+    frameCount = 0;
+  }
 }

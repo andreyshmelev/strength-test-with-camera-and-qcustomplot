@@ -26,6 +26,7 @@ public slots:
 
     void setupDemo(int demoIndex);
     void setupRealtimeDataDemo(QCustomPlot *customPlot);
+    void realtimeDataSlot();
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;
