@@ -5,9 +5,12 @@
 #include <QList>
 #include <QDebug>
 #include <QCameraInfo>
-#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QLayoutItem>
+#include <QDesktopWidget>
+#include <QScreen>
+#include <QMessageBox>
+#include <QMetaEnum>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -63,11 +66,100 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mCamera->setCaptureMode(QCamera::CaptureVideo);
     mCamera->start();
+
+
+      setupDemo(0);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+
+void MainWindow::setupDemo(int demoIndex)
+{
+//    demoIndex = 10;
+//  switch (demoIndex)
+//  {
+//    case 0:  setupQuadraticDemo(ui->customPlot); break;
+//    case 1:  setupSimpleDemo(ui->customPlot); break;
+//    case 2:  setupSincScatterDemo(ui->customPlot); break;
+//    case 3:  setupScatterStyleDemo(ui->customPlot); break;
+//    case 4:  setupScatterPixmapDemo(ui->customPlot); break;
+//    case 5:  setupLineStyleDemo(ui->customPlot); break;
+//    case 6:  setupDateDemo(ui->customPlot); break;
+//    case 7:  setupTextureBrushDemo(ui->customPlot); break;
+//    case 8:  setupMultiAxisDemo(ui->customPlot); break;
+//    case 9:  setupLogarithmicDemo(ui->customPlot); break;
+//    case 10: setupRealtimeDataDemo(ui->customPlot); break;
+//    case 11: setupParametricCurveDemo(ui->customPlot); break;
+//    case 12: setupBarChartDemo(ui->customPlot); break;
+//    case 13: setupStatisticalDemo(ui->customPlot); break;
+//    case 14: setupSimpleItemDemo(ui->customPlot); break;
+//    case 15: setupItemDemo(ui->customPlot); break;
+//    case 16: setupStyledDemo(ui->customPlot); break;
+//    case 17: setupAdvancedAxesDemo(ui->customPlot); break;
+//    case 18: setupColorMapDemo(ui->customPlot); break;
+//    case 19: setupFinancialDemo(ui->customPlot); break;
+//  }
+
+
+    setupRealtimeDataDemo(ui->customPlot);
+
+  ui->customPlot->replot();
+}
+
+
+
+
+void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
+{
+#if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
+  QMessageBox::critical(this, "", "You're using Qt < 4.7, the realtime data demo needs functions that are available with Qt 4.7 to work properly");
+#endif
+//  demoName = "Real Time Data Demo";
+
+  // include this section to fully disable antialiasing for higher performance:
+  /*
+  customPlot->setNotAntialiasedElements(QCP::aeAll);
+  QFont font;
+  font.setStyleStrategy(QFont::NoAntialias);
+  customPlot->xAxis->setTickLabelFont(font);
+  customPlot->yAxis->setTickLabelFont(font);
+  customPlot->legend->setFont(font);
+  */
+  customPlot->addGraph(); // blue line
+  customPlot->graph(0)->setPen(QPen(Qt::blue));
+  customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
+  customPlot->graph(0)->setAntialiasedFill(false);
+  customPlot->addGraph(); // red line
+  customPlot->graph(1)->setPen(QPen(Qt::red));
+  customPlot->graph(0)->setChannelFillGraph(customPlot->graph(1));
+
+  customPlot->addGraph(); // blue dot
+  customPlot->graph(2)->setPen(QPen(Qt::blue));
+  customPlot->graph(2)->setLineStyle(QCPGraph::lsNone);
+  customPlot->graph(2)->setScatterStyle(QCPScatterStyle::ssDisc);
+  customPlot->addGraph(); // red dot
+  customPlot->graph(3)->setPen(QPen(Qt::red));
+  customPlot->graph(3)->setLineStyle(QCPGraph::lsNone);
+  customPlot->graph(3)->setScatterStyle(QCPScatterStyle::ssDisc);
+
+  customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+  customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
+  customPlot->xAxis->setAutoTickStep(false);
+  customPlot->xAxis->setTickStep(2);
+  customPlot->axisRect()->setupFullAxesBox();
+
+  // make left and bottom axes transfer their ranges to right and top axes:
+  connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
+  connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
+
+  // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+  connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+  dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 }
 
 void MainWindow::ShowMessageBox(QString message)

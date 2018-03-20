@@ -7,6 +7,7 @@
 #include <QCameraImageCapture>
 #include <QVBoxLayout>
 #include <QLayoutItem>
+#include "qcustomplot.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,8 @@ public:
 public slots:
     void ShowMessageBox(QString message);
 
+    void setupDemo(int demoIndex);
+    void setupRealtimeDataDemo(QCustomPlot *customPlot);
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;
@@ -34,6 +37,8 @@ private:
     QCameraImageCapture *mCameraImageCapture2;
     QVBoxLayout *mLayout;
     QVBoxLayout *mLayout2;
+
+    QTimer dataTimer;
 };
 
 #endif // MAINWINDOW_H
