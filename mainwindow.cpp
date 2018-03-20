@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
 
     QImageEncoderSettings encSettings;
-    encSettings.setCodec("image/jpeg");
+//    encSettings.setCodec("image/jpeg");
     encSettings.setResolution(800,600);
 
     mCameraImageCapture->setEncodingSettings(encSettings);
@@ -67,8 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mCamera->setCaptureMode(QCamera::CaptureVideo);
     mCamera->start();
-//    mCamera2->setCaptureMode(QCamera::CaptureVideo);
-//    mCamera2->start();
+
 }
 
 MainWindow::~MainWindow()
