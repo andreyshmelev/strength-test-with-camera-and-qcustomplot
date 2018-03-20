@@ -8,6 +8,7 @@ QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+QT       += serialport
 TARGET = SibekoCAM
 TEMPLATE = app
 
@@ -25,10 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    qserialcanbuslib.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    qserialcanbuslib.h
 
 FORMS += \
         mainwindow.ui

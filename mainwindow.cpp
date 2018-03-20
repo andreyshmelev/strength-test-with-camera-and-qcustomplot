@@ -33,41 +33,36 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         mCamera = new QCamera(camerainfos.at(0));
         mCamera2 = new QCamera(camerainfos.at(0));
+
         mCameraViewfinder = new QCameraViewfinder(this);
         mCameraViewfinder2 = new QCameraViewfinder(this);
+
         mCameraImageCapture = new QCameraImageCapture(mCamera,this);
         mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
+
         mCamera->setViewfinder(mCameraViewfinder);
-        mCamera2->setViewfinder(mCameraViewfinder2);
-
+        //mCamera2->setViewfinder(mCameraViewfinder2);
         mLayout->addWidget(mCameraViewfinder);
-        mLayout2->addWidget(mCameraViewfinder2);
-//        mLayout->setMargin(0);
+        //        mLayout2->addWidget(mCameraViewfinder);
         ui->scrollArea->setLayout(mLayout);
-
-//        mLayout2 = mLayout;
         ui->scrollArea_2->setLayout(mLayout2);
     }
 
     foreach (const QCameraInfo &cameraInfo, camerainfos) {
-        //        mCamera = new QCamera(cameraInfo);
-        //        cameras.append(mCamera);
-        //        ui->CameraList->addItem(cameraInfo.description() + cameraInfo.deviceName());
     }
 
     mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
     mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
 
     QImageEncoderSettings encSettings;
-//    encSettings.setCodec("image/jpeg");
-    encSettings.setResolution(800,600);
+    encSettings.setCodec("image/jpeg");
+    encSettings.setResolution(1600,1200);
 
     mCameraImageCapture->setEncodingSettings(encSettings);
     mCameraImageCapture2->setEncodingSettings(encSettings);
 
     mCamera->setCaptureMode(QCamera::CaptureVideo);
     mCamera->start();
-
 }
 
 MainWindow::~MainWindow()

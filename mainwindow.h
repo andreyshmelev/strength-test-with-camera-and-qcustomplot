@@ -12,7 +12,6 @@ namespace Ui {
 class MainWindow;
 }
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -23,13 +22,10 @@ public:
 
 public slots:
     void ShowMessageBox(QString message);
+
 private:
     Ui::MainWindow *ui;
-
-
     QList<QCamera * > cameras;
-
-
     QCamera *mCamera;
     QCamera *mCamera2;
     QCameraViewfinder *mCameraViewfinder;
