@@ -27,11 +27,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    qserialcanbuslib.cpp
+    qserialcanbuslib.cpp \
+    qcustomplot.cpp
 
 HEADERS += \
         mainwindow.h \
-    qserialcanbuslib.h
+    qserialcanbuslib.h \
+    qcustomplot.h
 
 FORMS += \
         mainwindow.ui

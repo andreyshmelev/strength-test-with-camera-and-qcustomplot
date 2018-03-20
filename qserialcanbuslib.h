@@ -18,8 +18,6 @@ class QSerialCANBusLib : public QSerialPort
 
 public:
 
-
-
     explicit QSerialCANBusLib(QString portname,quint16 speed, DataBits databits, Parity parity, StopBits stopbits, FlowControl flowcontrol);
 
 //    static quint16 Baud460800 = 460800;
