@@ -25,7 +25,24 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>380</width>
+         <width>186</width>
+         <height>221</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QScrollArea" name="scrollArea_2">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>186</width>
          <height>221</height>
         </rect>
        </property>

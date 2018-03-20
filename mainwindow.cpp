@@ -16,8 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //    mCamera = new QCamera(this);
     mCameraViewfinder = new QCameraViewfinder(this);
+    mCameraViewfinder2 = new QCameraViewfinder(this);
     //    mCameraImageCapture = new QCameraImageCapture(this);
     mLayout = new QVBoxLayout(this);
+    mLayout2 = new QVBoxLayout(this);
 
     qDebug() << "availableCameras" << QCameraInfo::availableCameras();
 
@@ -30,12 +32,21 @@ MainWindow::MainWindow(QWidget *parent) :
     else
     {
         mCamera = new QCamera(camerainfos.at(0));
+        mCamera2 = new QCamera(camerainfos.at(0));
         mCameraViewfinder = new QCameraViewfinder(this);
+        mCameraViewfinder2 = new QCameraViewfinder(this);
         mCameraImageCapture = new QCameraImageCapture(mCamera,this);
+        mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
         mCamera->setViewfinder(mCameraViewfinder);
+        mCamera2->setViewfinder(mCameraViewfinder2);
+
         mLayout->addWidget(mCameraViewfinder);
-        mLayout->setMargin(0);
+        mLayout2->addWidget(mCameraViewfinder2);
+//        mLayout->setMargin(0);
         ui->scrollArea->setLayout(mLayout);
+
+//        mLayout2 = mLayout;
+        ui->scrollArea_2->setLayout(mLayout2);
     }
 
     foreach (const QCameraInfo &cameraInfo, camerainfos) {
@@ -45,15 +56,19 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+    mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
 
     QImageEncoderSettings encSettings;
     encSettings.setCodec("image/jpeg");
     encSettings.setResolution(800,600);
 
     mCameraImageCapture->setEncodingSettings(encSettings);
-    mCamera->setCaptureMode(QCamera::CaptureVideo);
+    mCameraImageCapture2->setEncodingSettings(encSettings);
 
+    mCamera->setCaptureMode(QCamera::CaptureVideo);
     mCamera->start();
+//    mCamera2->setCaptureMode(QCamera::CaptureVideo);
+//    mCamera2->start();
 }
 
 MainWindow::~MainWindow()

@@ -31,9 +31,13 @@ private:
 
 
     QCamera *mCamera;
+    QCamera *mCamera2;
     QCameraViewfinder *mCameraViewfinder;
+    QCameraViewfinder *mCameraViewfinder2;
     QCameraImageCapture *mCameraImageCapture;
+    QCameraImageCapture *mCameraImageCapture2;
     QVBoxLayout *mLayout;
+    QVBoxLayout *mLayout2;
 };
 
 #endif // MAINWINDOW_H
