@@ -13,6 +13,19 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/*border: 1px solid gray;*/
+/*border-radius: 10px;*/
+/*background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(103,158,210, 255), stop:1 rgba(103,158,255, 255));*/
+background-color: rgb(192,231,230);
+
+   color: white;
+
+QCheckBox::indicator {
+    width: 30px;
+    height: 30px;
+}</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">

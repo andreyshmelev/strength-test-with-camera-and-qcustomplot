@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setGeometry(250, 250, 800, 400);
+
+
     //    mCamera = new QCamera(this);
     mCameraViewfinder = new QCameraViewfinder(this);
     mCameraViewfinder2 = new QCameraViewfinder(this);
