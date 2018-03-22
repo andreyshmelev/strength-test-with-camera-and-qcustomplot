@@ -249,7 +249,7 @@ void MainWindow::realtimeDataSlot()
     static double lastPointKey = 0;
 
 
-    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 10);
+    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 100);
 
     int result;
     if (data.isEmpty())

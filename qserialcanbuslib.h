@@ -31,6 +31,7 @@ private:
      QByteArray outputbytedata;
      QTimer * tmr;
       QTimer * exittimer;
+      QTimer * exittimer2;
 
 public slots:
 

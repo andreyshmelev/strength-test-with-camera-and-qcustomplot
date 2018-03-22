@@ -140,7 +140,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
     QSerialPort * serial1 = new QSerialPort();
 
     serial1->setPortName("COM4");
-//    serial1->setPortName("ttyAMA0");
+    //    serial1->setPortName("ttyAMA0");
 
 
     QByteArray candataout;
@@ -152,6 +152,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
     while (!serial1->isOpen())
     {
+
         exittimer = new QTimer();
         QEventLoop loop;
 
@@ -177,6 +178,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
             }
         }
     }
+
 
     if (!serial1->setBaudRate(460800))
     {
@@ -210,7 +212,23 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
     while (candatainput.length()<minresponselenght)
 
     {
-        if(serial1->waitForReadyRead(timeoutmsec/10))
+
+
+        // закомментить если хотим побыстрее но по тайм - ауту будут лаги
+        //        {
+        //            exittimer2 = new QTimer();
+        //            QEventLoop loop2;
+
+        //            exittimer2->setInterval(timeoutmsec/10);
+        //            exittimer2->start();
+
+        //            connect(exittimer2, SIGNAL(timeout()), &loop2, SLOT(quit()));
+        //            loop2.exec();
+        //        }
+        //            if (serial1->bytesAvailable() > 0)
+
+        if(serial1->waitForReadyRead(timeoutmsec/10)) // закомментить и раскоментить выше если не хотим лагов при отсутствии ответа, но скорость ответа будет чуть пониже
+
         {
             if (serial1->bytesAvailable() > 0)
             {
