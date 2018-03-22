@@ -28,40 +28,6 @@ QCheckBox::indicator {
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QScrollArea" name="scrollArea">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>121</width>
-         <height>205</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QScrollArea" name="scrollArea_2">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents_2">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>412</width>
-         <height>205</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QCustomPlot" name="customPlot" native="true">
       <property name="sizePolicy">
@@ -79,6 +45,13 @@ QCheckBox::indicator {
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="message">
+      <property name="text">
+       <string>Unit</string>
       </property>
      </widget>
     </item>
@@ -205,11 +178,21 @@ QComboBox::drop-down
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="message">
-      <property name="text">
-       <string>Unit</string>
+    <item row="0" column="0" colspan="3">
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
       </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>543</width>
+         <height>197</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -220,7 +203,7 @@ QComboBox::drop-down
      <x>0</x>
      <y>0</y>
      <width>567</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

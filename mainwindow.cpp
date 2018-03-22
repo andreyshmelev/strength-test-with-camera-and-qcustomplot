@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
             mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
             mCamera2->setViewfinder(mCameraViewfinder2);
             mLayout2->addWidget(mCameraViewfinder2);
-            ui->scrollArea_2->setLayout(mLayout2);
+//            ui->scrollArea_2->setLayout(mLayout2);
 
             foreach (const QCameraInfo &cameraInfo, camerainfos) {
             }
