@@ -32,42 +32,42 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (camerainfos.length()==0)
     {
-        qApp->closeAllWindows();
-        qApp->exit();
+//        qApp->closeAllWindows();
+//        qApp->exit();
     }
 
     else
 
     {
 
-//        mCamera = new QCamera(camerainfos.at(0), this);
-//        mCameraViewfinder = new QCameraViewfinder(this);
-//        mCameraImageCapture = new QCameraImageCapture(mCamera,this);
-//        mCamera->setViewfinder(mCameraViewfinder);
-//        mLayout->addWidget(mCameraViewfinder);
-//        ui->scrollArea->setLayout(mLayout);
+        mCamera = new QCamera(camerainfos.at(0), this);
+        mCameraViewfinder = new QCameraViewfinder(this);
+        mCameraImageCapture = new QCameraImageCapture(mCamera,this);
+        mCamera->setViewfinder(mCameraViewfinder);
+        mLayout->addWidget(mCameraViewfinder);
+        ui->scrollArea->setLayout(mLayout);
 
-//        foreach (const QCameraInfo &cameraInfo, camerainfos) {
-//        }
+        foreach (const QCameraInfo &cameraInfo, camerainfos) {
+        }
 
-//        mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+        mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
 
-//        QImageEncoderSettings encSettings;
-//        encSettings.setCodec("image/jpeg");
-//        encSettings.setResolution(1600,1200);
+        QImageEncoderSettings encSettings;
+        encSettings.setCodec("image/jpeg");
+        encSettings.setResolution(1600,1200);
 
-//        mCameraImageCapture->setEncodingSettings(encSettings);
+        mCameraImageCapture->setEncodingSettings(encSettings);
 
-//        mCamera->setCaptureMode(QCamera::CaptureVideo);
-//        mCamera->start();
+        mCamera->setCaptureMode(QCamera::CaptureVideo);
+        mCamera->start();
 
-//        if (camerainfos.length()>1)
+        if (camerainfos.length()>1)
         {
 
 
             mCameraViewfinder2 = new QCameraViewfinder(this);
 
-            mCamera2 = new QCamera(camerainfos.at(0), this);
+            mCamera2 = new QCamera(camerainfos.at(1), this);
             mCameraViewfinder2 = new QCameraViewfinder(this);
             mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
             mCamera2->setViewfinder(mCameraViewfinder2);
@@ -91,7 +91,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
         }
     }
-    setupDemo(0);
+
+
+
+
+//    setupDemo(0);
 }
 
 MainWindow::~MainWindow()
@@ -245,6 +249,32 @@ void MainWindow::realtimeDataSlot()
     double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
 #endif
     static double lastPointKey = 0;
+
+
+//    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 11, 0);
+
+//    if (data.isEmpty())
+//    {
+////        ui->listWidget_Rx->addItem("Response timeout");
+////        ui->listWidget_Rx->scrollToBottom();
+//        return;
+//    }
+
+//    if (data.at(0) == -2)
+//    {
+////        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
+////        ui->listWidget_Rx->scrollToBottom();
+//        return;
+//    }
+//    int data0 = data.at(3);
+//    int data1 = data.at(4);
+//    int data2 = data.at(5);
+//    int data3 = data.at(6);
+
+//    int result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
+
+
+
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
     {
         double value0 = qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;

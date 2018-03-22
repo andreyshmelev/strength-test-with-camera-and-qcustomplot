@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QLayoutItem>
 #include "qcustomplot.h"
+#include "qserialcanbuslib.h"
 
 namespace Ui {
 class MainWindow;
@@ -44,6 +45,8 @@ private:
 
     QTimer dataTimer;
     QTimer dataTimer2;
+
+    QSerialCANBusLib * sibekiCan;
 };
 
 #endif // MAINWINDOW_H
