@@ -22,6 +22,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+     QVector<double> XData;
+     QVector<double> YData;
+
     void setupRealtimeDataDemo2(QCustomPlot *customPlot);
 public slots:
     void ShowMessageBox(QString message);
