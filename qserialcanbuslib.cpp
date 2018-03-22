@@ -51,7 +51,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 {
     QSerialPort * serial1 = new QSerialPort();
 
-    serial1->setPortName("COM4");
+    serial1->setPortName("COM8");
 
     qDebug()<<(serial1->portName()) << " serial->portName";
 
@@ -139,7 +139,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
     QSerialPort * serial1 = new QSerialPort();
 
-    serial1->setPortName("COM4");
+    serial1->setPortName("COM8");
     //    serial1->setPortName("ttyAMA0");
 
 
@@ -233,6 +233,8 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
             if (serial1->bytesAvailable() > 0)
             {
                 candatainput.append(serial1->readAll());
+
+                qDebug() << candatainput<<"candatainput";
             }
 
             if (candatainput.length() >= minresponselenght)

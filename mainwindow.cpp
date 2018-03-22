@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     {
 
-        mCamera = new QCamera(camerainfos.at(0), this);
+        mCamera = new QCamera(camerainfos.at(1), this);
         mCameraViewfinder = new QCameraViewfinder(this);
         mCameraImageCapture = new QCameraImageCapture(mCamera,this);
         mCamera->setViewfinder(mCameraViewfinder);
@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
-    sibekiCan = new QSerialCANBusLib("COM4",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
+    sibekiCan = new QSerialCANBusLib("COM8",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
     setupDemo(0);
 }
 
@@ -240,18 +240,20 @@ void MainWindow::ShowMessageBox(QString message)
 
 void MainWindow::realtimeDataSlot()
 {
+
+    int result;
+
     // calculate two new data points:
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
     double key = 0;
 #else
-    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/30000.0;
 #endif
     static double lastPointKey = 0;
 
 
-    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 10);
+    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 3, 1500);
 
-    int result;
     if (data.isEmpty())
     {
         //        ui->listWidget_Rx->addItem("Response timeout");
@@ -274,39 +276,34 @@ void MainWindow::realtimeDataSlot()
         else
 
         {
-            ui->message->clear();
+            if (data.length()==3)
+            {
+                ui->message->clear();
 
-            int data0 = data.at(3);
-            int data1 = data.at(4);
-            int data2 = data.at(5);
-            int data3 = data.at(6);
+                int data0 = data.at(0);
+                int data1 = data.at(1);
+                int data2 = data.at(2);
 
-            result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
+                result =  (data2<<16) + (data1<<8) + data0;
 
 
-//            key = (double) result;
+                ui->message->setText(QString("Result is: %1").arg(result));
+            }
+
+            //            key = (double) result;
         }
 
 
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
     {
-        double value0 = qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-//        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
+        double value0 = (double)result; //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
+        //        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
         ui->customPlot->graph(0)->addData(key, value0);
-        ui->customPlot->graph(1)->addData(key, value1);
-        // set data of dots:
-        ui->customPlot->graph(2)->clearData();
-        ui->customPlot->graph(2)->addData(key, value0);
-        ui->customPlot->graph(3)->clearData();
-        ui->customPlot->graph(3)->addData(key, value1);
-        // remove data of lines that's outside visible range:
-        ui->customPlot->graph(0)->removeDataBefore(key-8);
-        ui->customPlot->graph(1)->removeDataBefore(key-8);
         // rescale value (vertical) axis to fit the current data:
         ui->customPlot->graph(0)->rescaleValueAxis();
-        ui->customPlot->graph(1)->rescaleValueAxis(true);
+        ui->customPlot->graph(0)->rescaleAxes(false);
         lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
@@ -320,9 +317,9 @@ void MainWindow::realtimeDataSlot()
     if (key-lastFpsKey > 2) // average fps over 2 seconds
     {
         ui->statusBar->showMessage(
-                    QString("%1 FPS, Total Data points: %2")
+                    QString("%1 FPS, Total Data points: ")
                     .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
-                    .arg(ui->customPlot->graph(0)->data()->count()+ui->customPlot->graph(1)->data()->count())
+                    .arg(ui->customPlot->graph(0)->data()->count())
                     , 0);
         lastFpsKey = key;
         frameCount = 0;
