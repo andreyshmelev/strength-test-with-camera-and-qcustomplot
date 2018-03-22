@@ -132,15 +132,15 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
 QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  quint32 data,  quint16 datalenght, quint16 minresponselenght, quint64 timeoutmsec )
 {
-    if (timeoutmsec<25)
+    if (timeoutmsec<5)
     {
-        timeoutmsec = 25;
+        timeoutmsec = 5;
     }
 
     QSerialPort * serial1 = new QSerialPort();
 
-  //  serial1->setPortName("COM4");
-    serial1->setPortName("ttyAMA0");
+    serial1->setPortName("COM4");
+//    serial1->setPortName("ttyAMA0");
 
 
     QByteArray candataout;
@@ -152,7 +152,6 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
     while (!serial1->isOpen())
     {
-
         exittimer = new QTimer();
         QEventLoop loop;
 
@@ -178,7 +177,6 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
             }
         }
     }
-
 
     if (!serial1->setBaudRate(460800))
     {
@@ -227,7 +225,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
         else
         {
             a++;
-            if (a>=50)
+            if (a>=20)
             {
                 candatainput.clear();
                 break;

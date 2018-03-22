@@ -93,8 +93,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     sibekiCan = new QSerialCANBusLib("COM4",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
-
-
     setupDemo(0);
 }
 
@@ -251,28 +249,40 @@ void MainWindow::realtimeDataSlot()
     static double lastPointKey = 0;
 
 
-    //    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 11, 0);
+    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 10);
 
-    //    if (data.isEmpty())
-    //    {
-    ////        ui->listWidget_Rx->addItem("Response timeout");
-    ////        ui->listWidget_Rx->scrollToBottom();
-    //        return;
-    //    }
+    int result;
+    if (data.isEmpty())
+    {
+        //        ui->listWidget_Rx->addItem("Response timeout");
+        //        ui->listWidget_Rx->scrollToBottom();
 
-    //    if (data.at(0) == -2)
-    //    {
-    ////        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
-    ////        ui->listWidget_Rx->scrollToBottom();
-    //        return;
-    //    }
+        ui->message->setText("Response timeout");
+        //            return;
+    }
+    else
 
-    //    int data0 = data.at(3);
-    //    int data1 = data.at(4);
-    //    int data2 = data.at(5);
-    //    int data3 = data.at(6);
 
-    //    int result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
+        if (data.at(0) == -2)
+        {
+            //        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
+            //        ui->listWidget_Rx->scrollToBottom();
+            //            return;
+            ui->message->setText("Serial Port Open Timeout");
+            //            return;
+        }
+        else
+
+        {
+            ui->message->clear();
+
+            int data0 = data.at(3);
+            int data1 = data.at(4);
+            int data2 = data.at(5);
+            int data3 = data.at(6);
+
+            result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
+        }
 
 
 

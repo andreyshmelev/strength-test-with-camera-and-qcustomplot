@@ -205,6 +205,13 @@ QComboBox::drop-down
       </item>
      </layout>
     </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="message">
+      <property name="text">
+       <string>Unit</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
