@@ -19,10 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setGeometry(250, 250, 800, 400);
 
-
-    //    mCamera = new QCamera(this);
     mCameraViewfinder = new QCameraViewfinder(this);
-    mCameraViewfinder2 = new QCameraViewfinder(this);
     //    mCameraImageCapture = new QCameraImageCapture(this);
     mLayout = new QVBoxLayout(this);
     mLayout2 = new QVBoxLayout(this);
@@ -31,46 +28,69 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QList<QCameraInfo> camerainfos = QCameraInfo::availableCameras();
 
-    if (camerainfos.isEmpty())
+    ShowMessageBox(QString("Найдено %1 камеры").arg(camerainfos.length()));
+
+    if (camerainfos.length()==0)
     {
-        ShowMessageBox("Камеры не найдены");
+        qApp->closeAllWindows();
+        qApp->exit();
     }
+
     else
+
     {
-        mCamera = new QCamera(camerainfos.at(0));
-        mCamera2 = new QCamera(camerainfos.at(0));
 
-        mCameraViewfinder = new QCameraViewfinder(this);
-        mCameraViewfinder2 = new QCameraViewfinder(this);
+//        mCamera = new QCamera(camerainfos.at(0), this);
+//        mCameraViewfinder = new QCameraViewfinder(this);
+//        mCameraImageCapture = new QCameraImageCapture(mCamera,this);
+//        mCamera->setViewfinder(mCameraViewfinder);
+//        mLayout->addWidget(mCameraViewfinder);
+//        ui->scrollArea->setLayout(mLayout);
 
-        mCameraImageCapture = new QCameraImageCapture(mCamera,this);
-        mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
+//        foreach (const QCameraInfo &cameraInfo, camerainfos) {
+//        }
 
-        mCamera->setViewfinder(mCameraViewfinder);
-        //mCamera2->setViewfinder(mCameraViewfinder2);
-        mLayout->addWidget(mCameraViewfinder);
-        //        mLayout2->addWidget(mCameraViewfinder);
-        ui->scrollArea->setLayout(mLayout);
-        ui->scrollArea_2->setLayout(mLayout2);
+//        mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+
+//        QImageEncoderSettings encSettings;
+//        encSettings.setCodec("image/jpeg");
+//        encSettings.setResolution(1600,1200);
+
+//        mCameraImageCapture->setEncodingSettings(encSettings);
+
+//        mCamera->setCaptureMode(QCamera::CaptureVideo);
+//        mCamera->start();
+
+//        if (camerainfos.length()>1)
+        {
+
+
+            mCameraViewfinder2 = new QCameraViewfinder(this);
+
+            mCamera2 = new QCamera(camerainfos.at(0), this);
+            mCameraViewfinder2 = new QCameraViewfinder(this);
+            mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
+            mCamera2->setViewfinder(mCameraViewfinder2);
+            mLayout2->addWidget(mCameraViewfinder2);
+            ui->scrollArea_2->setLayout(mLayout2);
+
+            foreach (const QCameraInfo &cameraInfo, camerainfos) {
+            }
+
+            mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+
+            QImageEncoderSettings encSettings2;
+            encSettings2.setCodec("image/jpeg");
+            encSettings2.setResolution(1600,1200);
+
+            mCameraImageCapture2->setEncodingSettings(encSettings2);
+
+            mCamera2->setCaptureMode(QCamera::CaptureVideo);
+            mCamera2->start();
+
+
+        }
     }
-
-    foreach (const QCameraInfo &cameraInfo, camerainfos) {
-    }
-
-    mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-    mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-
-    QImageEncoderSettings encSettings;
-    encSettings.setCodec("image/jpeg");
-    encSettings.setResolution(1600,1200);
-
-    mCameraImageCapture->setEncodingSettings(encSettings);
-    mCameraImageCapture2->setEncodingSettings(encSettings);
-
-    mCamera->setCaptureMode(QCamera::CaptureVideo);
-    mCamera->start();
-
-
     setupDemo(0);
 }
 
@@ -79,8 +99,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
 void MainWindow::setupDemo(int demoIndex)
 {
     setupRealtimeDataDemo(ui->customPlot);
@@ -88,9 +106,6 @@ void MainWindow::setupDemo(int demoIndex)
     setupRealtimeDataDemo2(ui->customPlot_2);
     ui->customPlot_2->replot();
 }
-
-
-
 
 void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 {
