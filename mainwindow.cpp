@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (camerainfos.length()==0)
     {
-//        qApp->closeAllWindows();
-//        qApp->exit();
+        //        qApp->closeAllWindows();
+        //        qApp->exit();
     }
 
     else
@@ -92,10 +92,10 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
+    sibekiCan = new QSerialCANBusLib("COM4",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
 
 
-
-//    setupDemo(0);
+    setupDemo(0);
 }
 
 MainWindow::~MainWindow()
@@ -251,27 +251,28 @@ void MainWindow::realtimeDataSlot()
     static double lastPointKey = 0;
 
 
-//    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 11, 0);
+    //    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 11, 0);
 
-//    if (data.isEmpty())
-//    {
-////        ui->listWidget_Rx->addItem("Response timeout");
-////        ui->listWidget_Rx->scrollToBottom();
-//        return;
-//    }
+    //    if (data.isEmpty())
+    //    {
+    ////        ui->listWidget_Rx->addItem("Response timeout");
+    ////        ui->listWidget_Rx->scrollToBottom();
+    //        return;
+    //    }
 
-//    if (data.at(0) == -2)
-//    {
-////        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
-////        ui->listWidget_Rx->scrollToBottom();
-//        return;
-//    }
-//    int data0 = data.at(3);
-//    int data1 = data.at(4);
-//    int data2 = data.at(5);
-//    int data3 = data.at(6);
+    //    if (data.at(0) == -2)
+    //    {
+    ////        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
+    ////        ui->listWidget_Rx->scrollToBottom();
+    //        return;
+    //    }
 
-//    int result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
+    //    int data0 = data.at(3);
+    //    int data1 = data.at(4);
+    //    int data2 = data.at(5);
+    //    int data3 = data.at(6);
+
+    //    int result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
 
 
 

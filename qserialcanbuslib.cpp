@@ -51,7 +51,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 {
     QSerialPort * serial1 = new QSerialPort();
 
-    serial1->setPortName("ttyAMA0");
+    serial1->setPortName("COM4");
 
     qDebug()<<(serial1->portName()) << " serial->portName";
 
