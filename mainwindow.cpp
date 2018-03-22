@@ -249,7 +249,7 @@ void MainWindow::realtimeDataSlot()
     static double lastPointKey = 0;
 
 
-    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 100);
+    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 1, 10);
 
     int result;
     if (data.isEmpty())
@@ -282,13 +282,16 @@ void MainWindow::realtimeDataSlot()
             int data3 = data.at(6);
 
             result = (data3<<24) + (data2<<16) + (data1<<8) + data0;
-        }
 
+
+//            key = (double) result;
+        }
 
 
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
     {
         double value0 = qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
+//        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
         ui->customPlot->graph(0)->addData(key, value0);

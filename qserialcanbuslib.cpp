@@ -132,9 +132,9 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
 QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  quint32 data,  quint16 datalenght, quint16 minresponselenght, quint64 timeoutmsec )
 {
-    if (timeoutmsec<5)
+    if (timeoutmsec<2)
     {
-        timeoutmsec = 5;
+        timeoutmsec = 2;
     }
 
     QSerialPort * serial1 = new QSerialPort();
@@ -215,19 +215,19 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
 
         // закомментить если хотим побыстрее но по тайм - ауту будут лаги
-        //        {
-        //            exittimer2 = new QTimer();
-        //            QEventLoop loop2;
+                {
+                    exittimer2 = new QTimer();
+                    QEventLoop loop2;
 
-        //            exittimer2->setInterval(timeoutmsec/10);
-        //            exittimer2->start();
+                    exittimer2->setInterval(timeoutmsec/10);
+                    exittimer2->start();
 
-        //            connect(exittimer2, SIGNAL(timeout()), &loop2, SLOT(quit()));
-        //            loop2.exec();
-        //        }
-        //            if (serial1->bytesAvailable() > 0)
+                    connect(exittimer2, SIGNAL(timeout()), &loop2, SLOT(quit()));
+                    loop2.exec();
+                }
+                    if (serial1->bytesAvailable() > 0)
 
-        if(serial1->waitForReadyRead(timeoutmsec/10)) // закомментить и раскоментить выше если не хотим лагов при отсутствии ответа, но скорость ответа будет чуть пониже
+//        if(serial1->waitForReadyRead(timeoutmsec/10)) // закомментить и раскоментить выше если не хотим лагов при отсутствии ответа, но скорость ответа будет чуть пониже
 
         {
             if (serial1->bytesAvailable() > 0)
