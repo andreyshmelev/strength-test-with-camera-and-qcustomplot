@@ -11,6 +11,7 @@
 #include <QScreen>
 #include <QMessageBox>
 #include <QMetaEnum>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
             mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
             mCamera2->setViewfinder(mCameraViewfinder2);
             mLayout2->addWidget(mCameraViewfinder2);
-//            ui->scrollArea_2->setLayout(mLayout2);
+            //            ui->scrollArea_2->setLayout(mLayout2);
 
             foreach (const QCameraInfo &cameraInfo, camerainfos) {
             }
@@ -257,7 +258,7 @@ void MainWindow::realtimeDataSlot()
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
     double key = 0;
 #else
-    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/30000.0;
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
 #endif
     static double lastPointKey = 0;
 
@@ -306,12 +307,27 @@ void MainWindow::realtimeDataSlot()
 
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
     {
-//          double value0 = (double)result; //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
+        //          double value0 = (double)result; //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         //        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
         XData.append(key);
         YData.append(result);
+
+        qDebug() << QDateTime::currentDateTime().toString() <<QString::number(result) <<'\n';
+
+        QString filename="C:/Qt/sibekobelttest.txt";
+        QFile file( filename );
+        if ( file.open(QIODevice::Append|QIODevice::Text) )
+        {
+            QTextStream stream( &file );
+            stream << QDateTime::currentDateTime().toString() <<QString::number(result) <<'\n';
+            qDebug() << "Opened";
+        }
+        else
+        {    qDebug() << "filr closed";
+        }
+        file.close();
 
         if (ui->customPlot->graph(0)->data()->count()>600)
         {
@@ -319,7 +335,7 @@ void MainWindow::realtimeDataSlot()
             YData.removeFirst();
         }
         ui->customPlot->graph(0)->setData(XData,YData);
-//        ui->customPlot->graph(0)->addData(key, value0);
+        //        ui->customPlot->graph(0)->addData(key, value0);
         // rescale value (vertical) axis to fit the current data:
         ui->customPlot->graph(0)->rescaleValueAxis();
         ui->customPlot->graph(0)->rescaleAxes(false);
@@ -499,3 +515,8 @@ void MainWindow::realtimeDataSlot_2()
 //    frameCount = 0;
 //  }
 //}
+
+void MainWindow::on_pushButton_clicked()
+{
+
+}

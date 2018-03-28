@@ -34,6 +34,9 @@ public slots:
     void realtimeDataSlot();
     void realtimeDataSlot_2();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;

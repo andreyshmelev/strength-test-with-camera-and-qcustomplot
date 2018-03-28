@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>567</width>
-    <height>574</height>
+    <width>1037</width>
+    <height>798</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,26 +28,6 @@ QCheckBox::indicator {
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="1" column="0" colspan="2">
-     <widget class="QCustomPlot" name="customPlot" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QCustomPlot" name="customPlot_2" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="0">
      <widget class="QLabel" name="message">
       <property name="text">
@@ -57,13 +37,6 @@ QCheckBox::indicator {
     </item>
     <item row="2" column="1" colspan="2">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Unit</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label_6">
         <property name="text">
@@ -75,6 +48,13 @@ QCheckBox::indicator {
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>Data</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Unit</string>
         </property>
        </widget>
       </item>
@@ -176,6 +156,14 @@ QComboBox::drop-down
         </property>
        </widget>
       </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Rotat
+ camera</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="0" column="0" colspan="3">
@@ -188,11 +176,43 @@ QComboBox::drop-down
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>543</width>
-         <height>197</height>
+         <width>1013</width>
+         <height>370</height>
         </rect>
        </property>
       </widget>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QCustomPlot" name="customPlot" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>250</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QCustomPlot" name="customPlot_2" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>250</height>
+       </size>
+      </property>
      </widget>
     </item>
    </layout>
@@ -202,7 +222,7 @@ QComboBox::drop-down
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>567</width>
+     <width>1037</width>
      <height>26</height>
     </rect>
    </property>
