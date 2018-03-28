@@ -263,46 +263,46 @@ void MainWindow::realtimeDataSlot()
     static double lastPointKey = 0;
 
 
-    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 3, 1500);
+//    QByteArray data = sibekiCan->SendDataToCanBus(ui->unit->value(), ui->command->value(),ui->data->value(),ui->DataLenght->value(), 3, 1500);
 
-    if (data.isEmpty())
-    {
-        //        ui->listWidget_Rx->addItem("Response timeout");
-        //        ui->listWidget_Rx->scrollToBottom();
+//    if (data.isEmpty())
+//    {
+//        //        ui->listWidget_Rx->addItem("Response timeout");
+//        //        ui->listWidget_Rx->scrollToBottom();
 
-        ui->message->setText("Response timeout");
-        //            return;
-    }
-    else
-
-
-        if (data.at(0) == -2)
-        {
-            //        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
-            //        ui->listWidget_Rx->scrollToBottom();
-            //            return;
-            ui->message->setText("Serial Port Open Timeout");
-            //            return;
-        }
-        else
-
-        {
-            if (data.length()==3)
-            {
-                ui->message->clear();
-
-                int data0 = data.at(0);
-                int data1 = data.at(1);
-                int data2 = data.at(2);
-
-                result =  (data2<<16) + (data1<<8) + data0;
+//        ui->message->setText("Response timeout");
+//        //            return;
+//    }
+//    else
 
 
-                ui->message->setText(QString("Result is: %1").arg(result));
-            }
+//        if (data.at(0) == -2)
+//        {
+//            //        ui->listWidget_Rx->addItem("Serial Port Open Timeout");
+//            //        ui->listWidget_Rx->scrollToBottom();
+//            //            return;
+//            ui->message->setText("Serial Port Open Timeout");
+//            //            return;
+//        }
+//        else
 
-            //            key = (double) result;
-        }
+//        {
+//            if (data.length()==3)
+//            {
+//                ui->message->clear();
+
+//                int data0 = data.at(0);
+//                int data1 = data.at(1);
+//                int data2 = data.at(2);
+
+//                result =  (data2<<16) + (data1<<8) + data0;
+
+
+//                ui->message->setText(QString("Result is: %1").arg(result));
+//            }
+
+//            //            key = (double) result;
+//        }
 
 
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
@@ -314,7 +314,7 @@ void MainWindow::realtimeDataSlot()
         XData.append(key);
         YData.append(result);
 
-        qDebug() << QDateTime::currentDateTime().toString() <<QString::number(result) <<'\n';
+//        qDebug() << QDateTime::currentDateTime().toString() <<QString::number(result) <<'\n';
 
         QString filename="C:/Qt/sibekobelttest.txt";
         QFile file( filename );
@@ -322,7 +322,7 @@ void MainWindow::realtimeDataSlot()
         {
             QTextStream stream( &file );
             stream << QDateTime::currentDateTime().toString() <<QString::number(result) <<'\n';
-            qDebug() << "Opened";
+//            qDebug() << "Opened";
         }
         else
         {    qDebug() << "filr closed";
@@ -530,3 +530,20 @@ void MainWindow::setStart(bool value)
 {
     start = value;
 }
+
+void MainWindow::on_cyl1forward_clicked()
+{
+    QByteArray data = sibekiCan->SendDataToCanBus(200, 0xA1,0,0, 1, 150);
+    qDebug() << data<<" data";
+
+}
+
+void MainWindow::on_cyl1backward_clicked()
+{
+
+    QByteArray data = sibekiCan->SendDataToCanBus(200, 0xA2,0,0, 1, 150);
+    qDebug() << data<<" data";
+
+}
+
+

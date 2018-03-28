@@ -40,6 +40,10 @@ public slots:
 private slots:
     void on_pushButton_clicked();
 
+    void on_cyl1forward_clicked();
+
+    void on_cyl1backward_clicked();
+
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;

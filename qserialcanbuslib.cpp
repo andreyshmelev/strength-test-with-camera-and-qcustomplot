@@ -12,7 +12,7 @@ QSerialCANBusLib::QSerialCANBusLib(QString portname,quint16 speed, DataBits data
 
     if(serial->open(QIODevice::ReadWrite)){
 
-        qDebug()<<(serial->portName()) << " Opened";
+//        qDebug()<<(serial->portName()) << " Opened";
 
         if (!serial->setBaudRate(speed))
         {
@@ -57,7 +57,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
     if(serial1->open(QIODevice::ReadWrite)){
 
-        qDebug()<<(serial1->portName()) << " Opened";
+//        qDebug()<<(serial1->portName()) << " Opened";
 
         if (!serial1->setBaudRate(460800))
         {
@@ -139,7 +139,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
     QSerialPort * serial1 = new QSerialPort();
 
-    serial1->setPortName("COM8");
+    serial1->setPortName("COM7");
     //    serial1->setPortName("ttyAMA0");
 
 
@@ -195,15 +195,11 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
     serial1->setStopBits(QSerialPort::OneStop);
     serial1->setFlowControl(QSerialPort::NoFlowControl);
 
-    candataout.fill(0,11);
+    candataout.fill(0,3);
 
     candataout[0] = unit;
     candataout[1] = command;
-    candataout[2] = datalenght;
-    candataout[3] = data&0xff;
-    candataout[4] = (data>>8)&0xff;
-    candataout[5] = (data>>16)&0xff;
-    candataout[6] = (data>>24)&0xff;
+    candataout[2] = data&0xff;
 
     serial1->write(candataout);
     candataout.clear();
