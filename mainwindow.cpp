@@ -520,3 +520,13 @@ void MainWindow::on_pushButton_clicked()
 {
 
 }
+
+bool MainWindow::getStart() const
+{
+    return start;
+}
+
+void MainWindow::setStart(bool value)
+{
+    start = value;
+}

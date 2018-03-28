@@ -26,6 +26,9 @@ public:
      QVector<double> YData;
 
     void setupRealtimeDataDemo2(QCustomPlot *customPlot);
+    bool getStart() const;
+    void setStart(bool value);
+
 public slots:
     void ShowMessageBox(QString message);
 
@@ -48,6 +51,8 @@ private:
     QCameraImageCapture *mCameraImageCapture2;
     QVBoxLayout *mLayout;
     QVBoxLayout *mLayout2;
+
+    bool start;
 
     QTimer dataTimer;
     QTimer dataTimer2;
