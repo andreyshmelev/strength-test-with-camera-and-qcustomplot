@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     {
 
-        mCamera = new QCamera(camerainfos.at(1), this);
+        mCamera = new QCamera(camerainfos.at(0), this);
         mCameraViewfinder = new QCameraViewfinder(this);
         mCameraImageCapture = new QCameraImageCapture(mCamera,this);
         mCamera->setViewfinder(mCameraViewfinder);
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
             mCameraViewfinder2 = new QCameraViewfinder(this);
 
-            mCamera2 = new QCamera(camerainfos.at(1), this);
+            mCamera2 = new QCamera(camerainfos.at(0), this);
             mCameraViewfinder2 = new QCameraViewfinder(this);
             mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
             mCamera2->setViewfinder(mCameraViewfinder2);
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     }
 
-    sibekiCan = new QSerialCANBusLib("COM8",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
+    sibekiCan = new QSerialCANBusLib("COM7",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
     setupDemo(0);
 }
 
@@ -533,7 +533,7 @@ void MainWindow::setStart(bool value)
 
 void MainWindow::on_cyl1forward_clicked()
 {
-    QByteArray data = sibekiCan->SendDataToCanBus(200, 0xA1,0,0, 1, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 2,2,0, 1, 150);
     qDebug() << data<<" data";
 
 }
@@ -541,7 +541,7 @@ void MainWindow::on_cyl1forward_clicked()
 void MainWindow::on_cyl1backward_clicked()
 {
 
-    QByteArray data = sibekiCan->SendDataToCanBus(200, 0xA2,0,0, 1, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 1, 150);
     qDebug() << data<<" data";
 
 }

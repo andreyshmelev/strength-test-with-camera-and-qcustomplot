@@ -199,7 +199,10 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
     candataout[0] = unit;
     candataout[1] = command;
-    candataout[2] = data&0xff;
+    candataout[2] = (data)&0xff;
+    candataout[3] = (data>>8)&0xff;
+    candataout[4] = (data>>16)&0xff;
+    candataout[5] = (data>>24)&0xff;
 
     serial1->write(candataout);
     candataout.clear();
