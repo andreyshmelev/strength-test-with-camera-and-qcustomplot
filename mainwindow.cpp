@@ -282,34 +282,35 @@ void MainWindow::realtimeDataSlot()
     if (data.isEmpty())
     {
         ui->message->setText("Response timeout");
-        result= (double) -1;
+//        result= (double) -1;
     }
 
 
     if ( ( data.at(0) == 1) && (data.at(1) == 6)  )
-
     {
 
         {
             ui->message->clear();
 
-            quint16 data0 = data.at(2);
-            quint16 data1 = data.at(3);
-            quint16 data2 = data.at(4);
-            quint16 data3 = data.at(5);
+            quint8 data0 = (quint8) data.at(2);
+            quint8 data1 = (quint8) data.at(3);
+            quint8 data2 = (quint8) data.at(4);
+            quint8 data3 = (quint8) data.at(5);
             result =  (data3<<24) + (data2<<16) + (data1<<8) + data0;
-
-
-            result =  data0;
-
-
 
             if (result<0)
                 result = -1;
+
             ui->message->setText(QString("Result is: %1").arg(result));
 
+            if (result>=0)
+            {
+                XData.append(key);
+                YData.append(result);
+            }
 
-            qDebug () << "data is  " << data.at(2)<< data.at(3) << data.at(4) << data.at(5) ;
+
+            qDebug () << "data is  " << data[2]<< data[3]<< data[4]<< data[5] ;
             qDebug () << "result is  " << result;
         }
     }
@@ -325,10 +326,7 @@ void MainWindow::realtimeDataSlot()
         //        double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
 
-        if (result!=-1)
         {
-            XData.append(key);
-            YData.append(result);
 
 
             if (isstarted) {
