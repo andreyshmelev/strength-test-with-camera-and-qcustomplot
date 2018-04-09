@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QList<QCameraInfo> camerainfos = QCameraInfo::availableCameras();
 
-//    ShowMessageBox(QString("Найдено %1 камеры").arg(camerainfos.length()));
+    //    ShowMessageBox(QString("Найдено %1 камеры").arg(camerainfos.length()));
 
     if (camerainfos.length()==0)
     {
@@ -102,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     sibekiCan = new QSerialCANBusLib("COM8",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
     setupDemo(0);
+
+    isstarted = 0;
 }
 
 MainWindow::~MainWindow()
@@ -260,7 +262,7 @@ void MainWindow::ShowMessageBox(QString message)
 void MainWindow::realtimeDataSlot()
 {
 
-    int result;
+    double result;
 
     // calculate two new data points:
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
@@ -287,19 +289,31 @@ void MainWindow::realtimeDataSlot()
     if ( ( data.at(0) == 1) && (data.at(1) == 6)  )
 
     {
+
         {
             ui->message->clear();
 
-            int data0 = data.at(3);
-            int data1 = data.at(4);
-            int data2 = data.at(5);
-            int data3 = data.at(6);
-            result =  (data3<<16) + (data2<<16) + (data1<<8) + data0;
+            quint16 data0 = data.at(2);
+            quint16 data1 = data.at(3);
+            quint16 data2 = data.at(4);
+            quint16 data3 = data.at(5);
+            result =  (data3<<24) + (data2<<16) + (data1<<8) + data0;
+
+
+            result =  data0;
+
+
+
             if (result<0)
                 result = -1;
             ui->message->setText(QString("Result is: %1").arg(result));
+
+
+            qDebug () << "data is  " << data.at(2)<< data.at(3) << data.at(4) << data.at(5) ;
+            qDebug () << "result is  " << result;
         }
     }
+
 
 
     //    result= (double) 444;
@@ -310,10 +324,34 @@ void MainWindow::realtimeDataSlot()
         //        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         //        double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
-//        if (result!=-1)
+
+        if (result!=-1)
         {
             XData.append(key);
             YData.append(result);
+
+
+            if (isstarted) {
+
+
+                QFile file( this->filename );
+                if ( file.open(QIODevice::Append|QIODevice::Text) )
+                {
+                    QTextStream stream( &file );
+
+
+//                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
+                    QString sss = QString("%1\n").arg(QString::number(result));
+
+                    stream << sss;
+                }
+                else
+                {    qDebug() << "file closed";
+                }
+                file.close();
+            }
+
+
         }
 
 
@@ -412,7 +450,7 @@ void MainWindow::setStart(bool value)
 void MainWindow::on_cyl1forward_clicked()
 {
     QByteArray data = sibekiCan->SendDataToCanBus(1, 2,2,0, 1, 150);
-    qDebug() << data<<" data";
+
 }
 
 void MainWindow::on_cyl1backward_clicked()
@@ -424,8 +462,31 @@ void MainWindow::on_cyl1backward_clicked()
 }
 void MainWindow::on_startButton_clicked()
 {
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,6, 6, 150);
-    qDebug() << " data";
+    if (isstarted == false)
+    {
+//        this->filename =  QString("C:/Qt/LOG.txt").arg( QDateTime::currentDateTime().toString() );
+
+        this->filename =  QString("C:/LOG%1.csv").arg( QDateTime::currentDateTime().toString("yyMMddhhmmss")) ;
+
+
+        qDebug() << "try to Open a new file";
+        QFile file( this->filename );
+        if ( file.open(QIODevice::ReadWrite) )
+        {
+            qDebug() << "Opened new file";
+        }
+        file.close();
+        isstarted = true;
+        ui->startButton->setText("Стоп");
+    }
+    else
+    {
+        isstarted = false;
+        ui->startButton->setText("Старт");
+    }
+
+//    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,6, 6, 150);
+//    qDebug() << " data";
 }
 
 void MainWindow::on_stopbutton_clicked()

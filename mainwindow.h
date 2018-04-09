@@ -28,6 +28,8 @@ public:
     void setupRealtimeDataDemo2(QCustomPlot *customPlot);
     bool getStart() const;
     void setStart(bool value);
+    bool isstarted ;
+    QString filename;
 
 public slots:
     void ShowMessageBox(QString message);
