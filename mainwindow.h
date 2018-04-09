@@ -44,6 +44,10 @@ private slots:
 
     void on_cyl1backward_clicked();
 
+    void on_startButton_clicked();
+
+    void on_stopbutton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;
