@@ -247,8 +247,6 @@ void MainWindow::ShowMessageBox(QString message)
 }
 
 
-
-
 void MainWindow::realtimeDataSlot()
 {
 
