@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QList<QCameraInfo> camerainfos = QCameraInfo::availableCameras();
 
-    ShowMessageBox(QString("Найдено %1 камеры").arg(camerainfos.length()));
+//    ShowMessageBox(QString("Найдено %1 камеры").arg(camerainfos.length()));
 
     if (camerainfos.length()==0)
     {
@@ -41,7 +41,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     {
 
-        mCamera = new QCamera(camerainfos.at(0), this);
+        if (camerainfos.length()==1)
+            mCamera = new QCamera(camerainfos.at(0), this);
+
+        else
+            if (camerainfos.length()==2)
+                mCamera = new QCamera(camerainfos.at(1), this);
+
+
         mCameraViewfinder = new QCameraViewfinder(this);
         mCameraImageCapture = new QCameraImageCapture(mCamera,this);
         mCamera->setViewfinder(mCameraViewfinder);
@@ -112,12 +119,14 @@ void MainWindow::setupDemo(int demoIndex)
 
 void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 {
+
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
     QMessageBox::critical(this, "", "You're using Qt < 4.7, the realtime data demo needs functions that are available with Qt 4.7 to work properly");
 #endif
     //  demoName = "Real Time Data Demo";
 
     // include this section to fully disable antialiasing for higher performance:
+
     /*
   customPlot->setNotAntialiasedElements(QCP::aeAll);
   QFont font;
@@ -126,6 +135,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
   customPlot->yAxis->setTickLabelFont(font);
   customPlot->legend->setFont(font);
   */
+
     customPlot->addGraph(); // blue line
     customPlot->graph(0)->setPen(QPen(Qt::blue));
     customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
@@ -155,7 +165,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(0); // Interval 0 means to refresh as fast as possible
+    dataTimer.start(10); // Interval 0 means to refresh as fast as possible
 
     qDebug() << "seeeeetuuuuuuuup";
 }
@@ -221,7 +231,7 @@ void MainWindow::setupRealtimeDataDemo2(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer2, SIGNAL(timeout()), this, SLOT(realtimeDataSlot_2()));
-    dataTimer2.start(0); // Interval 0 means to refresh as fast as possible
+    dataTimer2.start(5000); // Interval 0 means to refresh as fast as possible
 
 }
 
@@ -267,7 +277,6 @@ void MainWindow::realtimeDataSlot()
     data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 150);
 
 
-
     if (data.isEmpty())
     {
         ui->message->setText("Response timeout");
@@ -301,7 +310,8 @@ void MainWindow::realtimeDataSlot()
         //        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
         //        double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
         // add data to lines:
-        if (result!=-1){
+//        if (result!=-1)
+        {
             XData.append(key);
             YData.append(result);
         }
