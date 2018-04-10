@@ -310,7 +310,7 @@ void MainWindow::realtimeDataSlot()
 
             result /= ui->koef->value();
 
-            ui->message->setText(QString("Result is: %1").arg(result));
+            ui->message->setText(QString("Сила: %1 кг").arg(result));
 
             if (result>=0&&result<=3000000)
             {
@@ -431,16 +431,20 @@ void MainWindow::on_cyl1backward_clicked()
 void MainWindow::StopTesting()
 {
 
-
-
     isstarted = false;
     ui->startButton->setText("Старт");
 
-    XData.clear();
-
-    YData.clear();
-
     QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
+
+
+
+    ui->prednatyagbutton->setEnabled(false);
+    ui->startButton->setEnabled(false);
+
+
+
+
+
 }
 
 void MainWindow::StartTesting()
@@ -449,6 +453,10 @@ void MainWindow::StartTesting()
     ui->customPlot->graph(0)->clearData();
     ui->customPlot->graph(1)->clearData();
     ui->customPlot->graph(2)->clearData();
+
+
+    XData.clear();
+    YData.clear();
 
     myTimer.start();
 
@@ -546,10 +554,14 @@ void MainWindow::on_sendparamsbutton_clicked()
 {
     QByteArray data ;
 
-//    QTimer::singleShot(100, this);
+
+//    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
 
 
-    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
+
+    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value()*ui->koef->value());
+
+
     data = sibekiCan->SendDataToCanBus(1, 3, maxforse, 0, 6, 100);
 
 qDebug() << data << "maxforse" ;
@@ -563,7 +575,25 @@ qDebug() << data << "maxforse" ;
     quint32 holdtime = (quint32)  (ui->holdtimespinBox->value()*10);
     data = sibekiCan->SendDataToCanBus(1, 6, holdtime, 0, 6, 100);
 
-
-
     qDebug() << data << "holdtime" ;
+
+    ui->prednatyagbutton->setEnabled(true);
+}
+
+void MainWindow::on_prednatyagbutton_clicked()
+{
+    QByteArray data ;
+
+    quint32 prednatyag= (quint32)  (ui->prednatyagvalue->value()*ui->koef->value());
+
+    data = sibekiCan->SendDataToCanBus(1, 8, prednatyag, 0, 6, 100);
+
+
+    ui->startButton->setEnabled(true);
+
+}
+
+void MainWindow::on_STOPBUTTON_clicked()
+{
+
 }

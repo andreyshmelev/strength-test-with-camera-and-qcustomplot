@@ -80,6 +80,10 @@ private slots:
 
     void on_sendparamsbutton_clicked();
 
+    void on_prednatyagbutton_clicked();
+
+    void on_STOPBUTTON_clicked();
+
 private:
     Ui::MainWindow *ui;
 
