@@ -33,8 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (camerainfos.length()==0)
     {
-        //        qApp->closeAllWindows();
-        //        qApp->exit();
+
     }
 
     else
@@ -105,9 +104,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     isstarted = 0;
 
-//    connect(&msec100Timer, SIGNAL(timeout()), this, SLOT(updatetimerbutton()));
+    float a = (float)  (ui->horizontalScrollBar->value());
+    ui->voltvalue->setText(QString::number( a/100    ) + " V");
 
-//    //    msec100Timer.start(100);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -260,41 +261,35 @@ void MainWindow::ShowMessageBox(QString message)
 
 void MainWindow::realtimeDataSlot()
 {
-
     double result;
-
     // calculate two new data points:
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
     double key = 0;
 #else
     double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
+
+    //    double key = QDateTime::currentDateTime().toSecsSinceEpoch()/10;
 #endif
     static double lastPointKey = 0;
 
-
     QByteArray data;
-
 
     data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 150);
 
 
-//    qDebug() << data << " graph data";
-
     if (data.isEmpty())
     {
-        ui->message->setText("Response timeout");
-//        result= (double) -1;
+        ui->message->setText("Контроллер не отвечает");
     }
 
 
     if ( ( data.at(0) == 1) && (data.at(1) == 1)&& (data.at(2) == 0)&& (data.at(3) == 0)&& (data.at(4) == 0)&& (data.at(5) == 0)  )
     {
         StopTesting();
-}
+    }
 
     if ( ( data.at(0) == 1) && (data.at(1) == 7)  )
     {
-
         {
             ui->message->clear();
 
@@ -314,13 +309,8 @@ void MainWindow::realtimeDataSlot()
 
             if (result>=0&&result<=3000000)
             {
-
-
-
                 XData.append(key);
                 YData.append(result);
-
-
                 if (isstarted) {
 
                     qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << result << "result";
@@ -335,7 +325,7 @@ void MainWindow::realtimeDataSlot()
                         QTextStream stream( &file );
 
 
-    //                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
+                        //                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
                         QString sss = QString("%1\n").arg(QString::number(result));
 
                         stream << sss;
@@ -436,15 +426,8 @@ void MainWindow::StopTesting()
 
     QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
 
-
-
     ui->prednatyagbutton->setEnabled(false);
     ui->startButton->setEnabled(false);
-
-
-
-
-
 }
 
 void MainWindow::StartTesting()
@@ -462,7 +445,7 @@ void MainWindow::StartTesting()
 
     this->filename =  QString("C:/LOG%1.csv").arg( QDateTime::currentDateTime().toString("yyMMddhhmmss")) ;
 
-   qDebug() << "try to Open a new file";
+    qDebug() << "try to Open a new file";
     QFile file( this->filename );
     if ( file.open(QIODevice::ReadWrite) )
     {
@@ -498,19 +481,19 @@ void MainWindow::startstop()
 
 void MainWindow::on_startButton_clicked()
 {
-  startstop();
+    startstop();
 }
 
 void MainWindow::on_horizontalScrollBar_sliderReleased()
 {
     float a = (float)  (ui->horizontalScrollBar->value());
-ui->voltvalue->setText(QString::number( a/100    ) + " V");
+    ui->voltvalue->setText(QString::number( a/100    ) + " V");
 }
 
 void MainWindow::on_horizontalScrollBar_valueChanged(int value)
 {
     float a = (float)  (ui->horizontalScrollBar->value());
-ui->voltvalue->setText(QString::number( a/100    ) + " V");
+    ui->voltvalue->setText(QString::number( a/100    ) + " V");
 }
 
 void MainWindow::on_setvoltagebutton_clicked()
@@ -555,16 +538,17 @@ void MainWindow::on_sendparamsbutton_clicked()
     QByteArray data ;
 
 
-//    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
+    //    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
 
 
 
     quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value()*ui->koef->value());
 
+    qDebug() << maxforse<< "maxforse";
 
     data = sibekiCan->SendDataToCanBus(1, 3, maxforse, 0, 6, 100);
 
-qDebug() << data << "maxforse" ;
+    qDebug() << data << "maxforse" ;
 
     quint32 worktime = (quint32)  (ui->worktimespinBox->value()*10);
     data = sibekiCan->SendDataToCanBus(1, 5, worktime, 0, 6, 100);
@@ -595,5 +579,9 @@ void MainWindow::on_prednatyagbutton_clicked()
 
 void MainWindow::on_STOPBUTTON_clicked()
 {
-
+    StopTesting();
+    StopTesting();
+    StopTesting();
+    StopTesting();
+    StopTesting();
 }
