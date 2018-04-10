@@ -171,7 +171,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(100); // Interval 0 means to refresh as fast as possible
+    dataTimer.start(25); // Interval 0 means to refresh as fast as possible
 
     qDebug() << "seeeeetuuuuuuuup";
 }

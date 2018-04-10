@@ -22,6 +22,7 @@ public:
 
 //    static quint16 Baud460800 = 460800;
 
+    QSerialPort serial1 ;
 
 signals:
 
