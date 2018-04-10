@@ -50,6 +50,8 @@ private slots:
 
     void on_stopbutton_clicked();
 
+    void on_horizontalScrollBar_sliderReleased();
+
 private:
     Ui::MainWindow *ui;
     QList<QCamera * > cameras;

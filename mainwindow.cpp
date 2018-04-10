@@ -479,6 +479,16 @@ void MainWindow::on_startButton_clicked()
     }
     else
     {
+
+        ui->customPlot->graph(0)->clearData();
+
+
+        ui->customPlot->graph(1)->clearData();
+
+
+        ui->customPlot->graph(2)->clearData();
+
+
         isstarted = false;
         ui->startButton->setText("Старт");
     }
@@ -491,4 +501,11 @@ void MainWindow::on_stopbutton_clicked()
 {
     QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,6, 6, 150);
     qDebug() << " data";
+}
+
+void MainWindow::on_horizontalScrollBar_sliderReleased()
+{
+
+    float a = (float)  (ui->horizontalScrollBar->value());
+ui->voltvalue->setText(QString::number( a/100    ) + " V");
 }
