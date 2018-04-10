@@ -233,7 +233,7 @@ serial1.setPortName("COM8");
             {
                 candatainput.append(serial1.readAll());
 
-                qDebug() << candatainput << " candatainput";
+                //qDebug() << candatainput << " candatainput";
             }
 
             if (candatainput.length() >= minresponselenght)

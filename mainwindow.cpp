@@ -119,8 +119,6 @@ void MainWindow::setupDemo(int demoIndex)
 {
     setupRealtimeDataDemo(ui->customPlot);
     ui->customPlot->replot();
-    setupRealtimeDataDemo2(ui->customPlot_2);
-    ui->customPlot_2->replot();
 }
 
 void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
@@ -234,7 +232,6 @@ void MainWindow::setupRealtimeDataDemo2(QCustomPlot *customPlot)
     connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
-    connect(&dataTimer2, SIGNAL(timeout()), this, SLOT(realtimeDataSlot_2()));
     dataTimer2.start(5000); // Interval 0 means to refresh as fast as possible
 
 }
@@ -385,51 +382,8 @@ void MainWindow::realtimeDataSlot()
 
 void MainWindow::realtimeDataSlot_2()
 {
-    // calculate two new data points:
-#if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
-    double key = 0;
-#else
-    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
-#endif
-    static double lastPointKey = 0;
-    if (key-lastPointKey > 0.01) // at most add point every 10 ms
-    {
-        double value0 = qSin(key*4); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-        double value1 = qCos(key*4); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
-        // add data to lines:
-        ui->customPlot_2->graph(0)->addData(key, value0);
-        ui->customPlot_2->graph(1)->addData(key, value1);
-        // set data of dots:
-        ui->customPlot_2->graph(2)->clearData();
-        ui->customPlot_2->graph(2)->addData(key, value0);
-        ui->customPlot_2->graph(3)->clearData();
-        ui->customPlot_2->graph(3)->addData(key, value1);
-        // remove data of lines that's outside visible range:
-        ui->customPlot_2->graph(0)->removeDataBefore(key-8);
-        ui->customPlot_2->graph(1)->removeDataBefore(key-8);
-        // rescale value (vertical) axis to fit the current data:
-        ui->customPlot_2->graph(0)->rescaleValueAxis();
-        ui->customPlot_2->graph(1)->rescaleValueAxis(true);
-        lastPointKey = key;
-    }
-    // make key axis range scroll with the data (at a constant range size of 8):
-    ui->customPlot_2->xAxis->setRange(key+0.25, 8, Qt::AlignRight);
-    ui->customPlot_2->replot();
 
-    // calculate frames per second:
-    static double lastFpsKey;
-    static int frameCount;
-    ++frameCount;
-    if (key-lastFpsKey > 2) // average fps over 2 seconds
-    {
-        ui->statusBar->showMessage(
-                    QString("%1 FPS, Total Data points: %2")
-                    .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
-                    .arg(ui->customPlot->graph(0)->data()->count())
-                    , 0);
-        lastFpsKey = key;
-        frameCount = 0;
-    }
+    return;
 }
 
 void MainWindow::updatetimerbutton()
@@ -574,16 +528,25 @@ void MainWindow::on_cyl1back_clicked()
 void MainWindow::on_sendparamsbutton_clicked()
 {
     QByteArray data ;
+
+//    QTimer::singleShot(100, this);
+
+
     quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
     data = sibekiCan->SendDataToCanBus(1, 3, maxforse, 0, 6, 100);
 
+qDebug() << data << "maxforse" ;
 
     quint32 worktime = (quint32)  (ui->worktimespinBox->value()*10);
     data = sibekiCan->SendDataToCanBus(1, 5, worktime, 0, 6, 100);
 
 
+    qDebug() << data << "worktime" ;
 
     quint32 holdtime = (quint32)  (ui->holdtimespinBox->value()*10);
     data = sibekiCan->SendDataToCanBus(1, 6, holdtime, 0, 6, 100);
 
+
+
+    qDebug() << data << "holdtime" ;
 }
