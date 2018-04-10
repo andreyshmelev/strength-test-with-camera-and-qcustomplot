@@ -35,6 +35,10 @@ public:
 
     void startstop();
 
+    void StopTesting();
+    
+    void StartTesting();
+    
 public slots:
     void ShowMessageBox(QString message);
 

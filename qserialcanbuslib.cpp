@@ -65,12 +65,12 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
         if (!serial1.setBaudRate(115200))
         {
-            qDebug() << serial1.errorString();
+//            qDebug() << serial1.errorString();
         }
 
         if (!serial1.setDataBits(QSerialPort::Data8))
         {
-            qDebug() << serial1.errorString();
+//            qDebug() << serial1.errorString();
         }
 
         if (!serial1.setParity(QSerialPort::NoParity))
@@ -151,7 +151,7 @@ serial1.setPortName("COM8");
 
 
 
-qDebug() << serial1.errorString() <<"serial1.errorString()" ;
+//qDebug() << serial1.errorString() <<"serial1.errorString()" ;
     QByteArray candataout;
     QByteArray candatainput;
 

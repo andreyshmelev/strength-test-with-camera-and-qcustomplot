@@ -287,6 +287,11 @@ void MainWindow::realtimeDataSlot()
     }
 
 
+    if ( ( data.at(0) == 1) && (data.at(1) == 1)&& (data.at(2) == 0)&& (data.at(3) == 0)&& (data.at(4) == 0)&& (data.at(5) == 0)  )
+    {
+        StopTesting();
+}
+
     if ( ( data.at(0) == 1) && (data.at(1) == 7)  )
     {
 
@@ -316,13 +321,12 @@ void MainWindow::realtimeDataSlot()
                 YData.append(result);
 
 
-
-                qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << result << "result";
-
-                qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << key << "key";
-
-
                 if (isstarted) {
+
+                    qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << result << "result";
+
+                    qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << key << "key";
+
 
 
                     QFile file( this->filename );
@@ -353,7 +357,7 @@ void MainWindow::realtimeDataSlot()
     }
 
 
-    if (key-lastPointKey > 0.01) // at most add point every 10 ms
+    if (key-lastPointKey > 0.001) // at most add point every 10 ms
     {
 
 
@@ -365,7 +369,7 @@ void MainWindow::realtimeDataSlot()
         lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->customPlot->xAxis->setRange(key+0.25, 8, Qt::AlignRight);
+    ui->customPlot->xAxis->setRange(key+0.001, 8, Qt::AlignRight);
     ui->customPlot->replot();
 
     // calculate frames per second:
@@ -424,55 +428,60 @@ void MainWindow::on_cyl1backward_clicked()
     qDebug() << data<<" data";
 
 }
+void MainWindow::StopTesting()
+{
+
+
+
+    isstarted = false;
+    ui->startButton->setText("Старт");
+
+    XData.clear();
+
+    YData.clear();
+
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
+}
+
+void MainWindow::StartTesting()
+{
+    isstarted = true;
+    ui->customPlot->graph(0)->clearData();
+    ui->customPlot->graph(1)->clearData();
+    ui->customPlot->graph(2)->clearData();
+
+    myTimer.start();
+
+    this->filename =  QString("C:/LOG%1.csv").arg( QDateTime::currentDateTime().toString("yyMMddhhmmss")) ;
+
+   qDebug() << "try to Open a new file";
+    QFile file( this->filename );
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        qDebug() << "Opened new file";
+    }
+    file.close();
+    ui->startButton->setText("Стоп");
+
+
+
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 150);
+}
+
 void MainWindow::startstop()
 {
     if (isstarted == false)
     {
 
 
-        myTimer.start();
-        // do something..
-
-//        this->filename =  QString("C:/Qt/LOG.txt").arg( QDateTime::currentDateTime().toString() );
-
-        this->filename =  QString("C:/LOG%1.csv").arg( QDateTime::currentDateTime().toString("yyMMddhhmmss")) ;
-
-       qDebug() << "try to Open a new file";
-        QFile file( this->filename );
-        if ( file.open(QIODevice::ReadWrite) )
-        {
-            qDebug() << "Opened new file";
-        }
-        file.close();
-        isstarted = true;
-        ui->startButton->setText("Стоп");
-
-
-
-        QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 150);
+        StartTesting();
 
 
     }
     else
     {
 
-        ui->customPlot->graph(0)->clearData();
-
-
-        ui->customPlot->graph(1)->clearData();
-
-
-        ui->customPlot->graph(2)->clearData();
-
-
-        isstarted = false;
-        ui->startButton->setText("Старт");
-
-        XData.clear();
-
-        YData.clear();
-
-        QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
+        StopTesting();
 
     }
 
