@@ -172,8 +172,6 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
     dataTimer.start(25); // Interval 0 means to refresh as fast as possible
-
-    qDebug() << "seeeeetuuuuuuuup";
 }
 
 
@@ -571,4 +569,21 @@ void MainWindow::on_cyl1back_clicked()
 {
 
     QByteArray data = sibekiCan->SendDataToCanBus(1, 2, 2, 0, 6, 100);
+}
+
+void MainWindow::on_sendparamsbutton_clicked()
+{
+    QByteArray data ;
+    quint32 maxforse = (quint32)  (ui->MaxForseSpinBox->value());
+    data = sibekiCan->SendDataToCanBus(1, 3, maxforse, 0, 6, 100);
+
+
+    quint32 worktime = (quint32)  (ui->worktimespinBox->value()*10);
+    data = sibekiCan->SendDataToCanBus(1, 5, worktime, 0, 6, 100);
+
+
+
+    quint32 holdtime = (quint32)  (ui->holdtimespinBox->value()*10);
+    data = sibekiCan->SendDataToCanBus(1, 6, holdtime, 0, 6, 100);
+
 }

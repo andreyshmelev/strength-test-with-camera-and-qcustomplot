@@ -72,6 +72,8 @@ private slots:
 
     void on_cyl1back_clicked();
 
+    void on_sendparamsbutton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
