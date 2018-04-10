@@ -25,6 +25,8 @@ public:
      QVector<double> XData;
      QVector<double> YData;
 
+     const quint32 koef = 695000/285;
+
     void setupRealtimeDataDemo2(QCustomPlot *customPlot);
     bool getStart() const;
     void setStart(bool value);

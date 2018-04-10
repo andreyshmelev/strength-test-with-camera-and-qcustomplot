@@ -169,7 +169,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(25); // Interval 0 means to refresh as fast as possible
+    dataTimer.start(13); // Interval 0 means to refresh as fast as possible
 }
 
 
@@ -302,56 +302,59 @@ void MainWindow::realtimeDataSlot()
             if (result<0)
                 result = -1;
 
+
+            result /= ui->koef->value();
+
             ui->message->setText(QString("Result is: %1").arg(result));
 
-            if (result>=0)
+            if (result>=0&&result<=3000000)
             {
+
+
+
                 XData.append(key);
                 YData.append(result);
+
+
+
+                qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << result << "result";
+
+                qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << key << "key";
+
+
+                if (isstarted) {
+
+
+                    QFile file( this->filename );
+                    if ( file.open(QIODevice::Append|QIODevice::Text) )
+                    {
+                        QTextStream stream( &file );
+
+
+    //                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
+                        QString sss = QString("%1\n").arg(QString::number(result));
+
+                        stream << sss;
+                    }
+                    else
+                    {    qDebug() << "file closed";
+                    }
+                    file.close();
+                }
+
             }
 
-
-//            qDebug () << "data is  " << data[2]<< data[3]<< data[4]<< data[5] ;
-//            qDebug () << "result is  " << result;
+            while (XData.length()>=200)
+            {
+                XData.removeFirst();
+                YData.removeFirst();
+            }
         }
     }
 
 
-
-    //    result= (double) 444;
-
     if (key-lastPointKey > 0.01) // at most add point every 10 ms
     {
-        //          double value0 = (double)result; //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-        //        double value0 = (key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-        //        double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
-        // add data to lines:
-
-        {
-
-
-            if (isstarted) {
-
-
-                QFile file( this->filename );
-                if ( file.open(QIODevice::Append|QIODevice::Text) )
-                {
-                    QTextStream stream( &file );
-
-
-//                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
-                    QString sss = QString("%1\n").arg(QString::number(result));
-
-                    stream << sss;
-                }
-                else
-                {    qDebug() << "file closed";
-                }
-                file.close();
-            }
-
-
-        }
 
 
         ui->customPlot->graph(0)->setData(XData,YData);
@@ -465,6 +468,9 @@ void MainWindow::startstop()
         isstarted = false;
         ui->startButton->setText("Старт");
 
+        XData.clear();
+
+        YData.clear();
 
         QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
 

@@ -16,7 +16,7 @@ QSerialCANBusLib::QSerialCANBusLib(QString portname,quint16 speed, DataBits data
 
         if (!serial->setBaudRate(speed))
         {
-            qDebug() << "Error" << serial->errorString();
+//            qDebug() << "Error" << serial->errorString();
         }
 
         if (!serial->setDataBits(databits))
@@ -53,11 +53,11 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
     serial1.setPortName("COM8");
 
-    qDebug()<<(serial1.portName()) << " serial->portName";
+//    qDebug()<<(serial1.portName()) << " serial->portName";
 
 
 
-            qDebug()<<(serial1.errorString()) << " error";
+//            qDebug()<<(serial1.errorString()) << " error";
 
     if(serial1.open(QIODevice::ReadWrite)){
 
@@ -91,7 +91,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
         candata[3] = 0;
         candata[4] = 1;
 
-        qDebug() << candata << "candata out";
+//        qDebug() << candata << "candata out";
 
         serial1.write(candata);
         data.clear();
@@ -155,12 +155,12 @@ qDebug() << serial1.errorString() <<"serial1.errorString()" ;
     QByteArray candataout;
     QByteArray candatainput;
 
+    serial1.open(QIODevice::ReadWrite);
+
     int b = 0;
 
     while (!serial1.isOpen())
     {
-
-        serial1.open(QIODevice::ReadWrite);
 
         exittimer = new QTimer();
         QEventLoop loop;
