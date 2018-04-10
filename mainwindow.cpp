@@ -278,6 +278,8 @@ void MainWindow::realtimeDataSlot()
     data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 150);
 
 
+//    qDebug() << data << " graph data";
+
     if (data.isEmpty())
     {
         ui->message->setText("Response timeout");

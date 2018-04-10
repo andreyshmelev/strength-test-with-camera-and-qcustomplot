@@ -143,19 +143,24 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
 
 //    QSerialPort serial1 ;
 
+
+
+
 serial1.setPortName("COM8");
     //    serial1.setPortName("ttyAMA0");
 
 
+
+qDebug() << serial1.errorString() <<"serial1.errorString()" ;
     QByteArray candataout;
     QByteArray candatainput;
-
-    serial1.open(QIODevice::ReadWrite);
 
     int b = 0;
 
     while (!serial1.isOpen())
     {
+
+        serial1.open(QIODevice::ReadWrite);
 
         exittimer = new QTimer();
         QEventLoop loop;
@@ -252,7 +257,7 @@ serial1.setPortName("COM8");
         }
     }
 
-  //  serial1.close();
+//    serial1.close();
     return candatainput;
 }
 
