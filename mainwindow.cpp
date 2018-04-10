@@ -104,6 +104,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setupDemo(0);
 
     isstarted = 0;
+
+//    connect(&msec100Timer, SIGNAL(timeout()), this, SLOT(updatetimerbutton()));
+
+//    //    msec100Timer.start(100);
 }
 
 MainWindow::~MainWindow()
@@ -167,7 +171,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(10); // Interval 0 means to refresh as fast as possible
+    dataTimer.start(100); // Interval 0 means to refresh as fast as possible
 
     qDebug() << "seeeeetuuuuuuuup";
 }
@@ -286,7 +290,7 @@ void MainWindow::realtimeDataSlot()
     }
 
 
-    if ( ( data.at(0) == 1) && (data.at(1) == 6)  )
+    if ( ( data.at(0) == 1) && (data.at(1) == 7)  )
     {
 
         {
@@ -310,8 +314,8 @@ void MainWindow::realtimeDataSlot()
             }
 
 
-            qDebug () << "data is  " << data[2]<< data[3]<< data[4]<< data[5] ;
-            qDebug () << "result is  " << result;
+//            qDebug () << "data is  " << data[2]<< data[3]<< data[4]<< data[5] ;
+//            qDebug () << "result is  " << result;
         }
     }
 
@@ -430,6 +434,11 @@ void MainWindow::realtimeDataSlot_2()
     }
 }
 
+void MainWindow::updatetimerbutton()
+{
+
+}
+
 void MainWindow::on_pushButton_clicked()
 {
 
@@ -458,16 +467,20 @@ void MainWindow::on_cyl1backward_clicked()
     qDebug() << data<<" data";
 
 }
-void MainWindow::on_startButton_clicked()
+void MainWindow::startstop()
 {
     if (isstarted == false)
     {
+
+
+        myTimer.start();
+        // do something..
+
 //        this->filename =  QString("C:/Qt/LOG.txt").arg( QDateTime::currentDateTime().toString() );
 
         this->filename =  QString("C:/LOG%1.csv").arg( QDateTime::currentDateTime().toString("yyMMddhhmmss")) ;
 
-
-        qDebug() << "try to Open a new file";
+       qDebug() << "try to Open a new file";
         QFile file( this->filename );
         if ( file.open(QIODevice::ReadWrite) )
         {
@@ -476,6 +489,12 @@ void MainWindow::on_startButton_clicked()
         file.close();
         isstarted = true;
         ui->startButton->setText("Стоп");
+
+
+
+        QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 150);
+
+
     }
     else
     {
@@ -491,21 +510,65 @@ void MainWindow::on_startButton_clicked()
 
         isstarted = false;
         ui->startButton->setText("Старт");
+
+
+        QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
+
     }
 
-//    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,6, 6, 150);
-//    qDebug() << " data";
+    int nMilliseconds = myTimer.elapsed();
 }
 
-void MainWindow::on_stopbutton_clicked()
+void MainWindow::on_startButton_clicked()
 {
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,6, 6, 150);
-    qDebug() << " data";
+  startstop();
 }
 
 void MainWindow::on_horizontalScrollBar_sliderReleased()
 {
-
     float a = (float)  (ui->horizontalScrollBar->value());
 ui->voltvalue->setText(QString::number( a/100    ) + " V");
+}
+
+void MainWindow::on_horizontalScrollBar_valueChanged(int value)
+{
+    float a = (float)  (ui->horizontalScrollBar->value());
+ui->voltvalue->setText(QString::number( a/100    ) + " V");
+}
+
+void MainWindow::on_setvoltagebutton_clicked()
+{
+    QByteArray data;
+
+    quint32 a = (quint32)  (ui->horizontalScrollBar->value());
+    data = sibekiCan->SendDataToCanBus(1, 4, a, 0, 6, 500);
+    qDebug() << "voltage " << data ;
+}
+
+void MainWindow::on_stopbutton_3_clicked()
+{
+
+}
+
+void MainWindow::on_cyl2back_clicked()
+{
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 2, 3, 0, 6, 100);
+}
+
+void MainWindow::on_cyl2front_clicked()
+{
+
+    QByteArray  data = sibekiCan->SendDataToCanBus(1, 2, 1, 0, 6, 100);
+}
+
+void MainWindow::on_cyl1back_2_clicked()
+{
+
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 2, 0, 0, 6, 100);
+}
+
+void MainWindow::on_cyl1back_clicked()
+{
+
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 2, 2, 0, 6, 100);
 }

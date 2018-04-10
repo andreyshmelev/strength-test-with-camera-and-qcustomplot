@@ -31,6 +31,8 @@ public:
     bool isstarted ;
     QString filename;
 
+    void startstop();
+
 public slots:
     void ShowMessageBox(QString message);
 
@@ -38,6 +40,12 @@ public slots:
     void setupRealtimeDataDemo(QCustomPlot *customPlot);
     void realtimeDataSlot();
     void realtimeDataSlot_2();
+
+
+
+    void updatetimerbutton();
+
+
 
 private slots:
     void on_pushButton_clicked();
@@ -48,13 +56,33 @@ private slots:
 
     void on_startButton_clicked();
 
-    void on_stopbutton_clicked();
-
     void on_horizontalScrollBar_sliderReleased();
+
+    void on_horizontalScrollBar_valueChanged(int value);
+
+    void on_setvoltagebutton_clicked();
+
+    void on_stopbutton_3_clicked();
+
+    void on_cyl2back_clicked();
+
+    void on_cyl2front_clicked();
+
+    void on_cyl1back_2_clicked();
+
+    void on_cyl1back_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QList<QCamera * > cameras;
+
+
+
+    QTime myTimer;
+
+    QTime msec100Timer;
+
+
+     QList<QCamera * > cameras;
     QCamera *mCamera;
     QCamera *mCamera2;
     QCameraViewfinder *mCameraViewfinder;

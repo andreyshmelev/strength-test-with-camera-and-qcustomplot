@@ -63,7 +63,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
 //        qDebug()<<(serial1.portName()) << " Opened";
 
-        if (!serial1.setBaudRate(460800))
+        if (!serial1.setBaudRate(115200))
         {
             qDebug() << serial1.errorString();
         }
@@ -182,7 +182,7 @@ serial1.setPortName("COM8");
     }
 
 
-    if (!serial1.setBaudRate(460800))
+    if (!serial1.setBaudRate(115200))
     {
     }
 
@@ -197,7 +197,7 @@ serial1.setPortName("COM8");
     serial1.setStopBits(QSerialPort::OneStop);
     serial1.setFlowControl(QSerialPort::NoFlowControl);
 
-    candataout.fill(0,3);
+    candataout.fill(0,6);
 
     candataout[0] = unit;
     candataout[1] = command;
@@ -233,7 +233,7 @@ serial1.setPortName("COM8");
             {
                 candatainput.append(serial1.readAll());
 
-//                qDebug() << candatainput << " candatainput";
+                qDebug() << candatainput << " candatainput";
             }
 
             if (candatainput.length() >= minresponselenght)
