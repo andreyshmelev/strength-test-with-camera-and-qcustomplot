@@ -12,11 +12,11 @@ QSerialCANBusLib::QSerialCANBusLib(QString portname,quint16 speed, DataBits data
 
     if(serial->open(QIODevice::ReadWrite)){
 
-//        qDebug()<<(serial->portName()) << " Opened";
+        //        qDebug()<<(serial->portName()) << " Opened";
 
         if (!serial->setBaudRate(speed))
         {
-//            qDebug() << "Error" << serial->errorString();
+            //            qDebug() << "Error" << serial->errorString();
         }
 
         if (!serial->setDataBits(databits))
@@ -53,24 +53,24 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
 
     serial1.setPortName("COM8");
 
-//    qDebug()<<(serial1.portName()) << " serial->portName";
+    //    qDebug()<<(serial1.portName()) << " serial->portName";
 
 
 
-//            qDebug()<<(serial1.errorString()) << " error";
+    //            qDebug()<<(serial1.errorString()) << " error";
 
     if(serial1.open(QIODevice::ReadWrite)){
 
-//        qDebug()<<(serial1.portName()) << " Opened";
+        //        qDebug()<<(serial1.portName()) << " Opened";
 
         if (!serial1.setBaudRate(115200))
         {
-//            qDebug() << serial1.errorString();
+            //            qDebug() << serial1.errorString();
         }
 
         if (!serial1.setDataBits(QSerialPort::Data8))
         {
-//            qDebug() << serial1.errorString();
+            //            qDebug() << serial1.errorString();
         }
 
         if (!serial1.setParity(QSerialPort::NoParity))
@@ -91,7 +91,7 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(QByteArray data, quint16 minrespon
         candata[3] = 0;
         candata[4] = 1;
 
-//        qDebug() << candata << "candata out";
+        //        qDebug() << candata << "candata out";
 
         serial1.write(candata);
         data.clear();
@@ -141,17 +141,17 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
         timeoutmsec = 2;
     }
 
-//    QSerialPort serial1 ;
+    //    QSerialPort serial1 ;
 
 
 
 
-serial1.setPortName("COM8");
+    serial1.setPortName("COM8");
     //    serial1.setPortName("ttyAMA0");
 
 
 
-//qDebug() << serial1.errorString() <<"serial1.errorString()" ;
+    //qDebug() << serial1.errorString() <<"serial1.errorString()" ;
     QByteArray candataout;
     QByteArray candatainput;
 
@@ -159,45 +159,42 @@ serial1.setPortName("COM8");
 
     int b = 0;
 
-    while (!serial1.isOpen())
-    {
+    //    while (!serial1.isOpen())
+    //    {
 
-        exittimer = new QTimer();
-        QEventLoop loop;
+    //        exittimer = new QTimer();
+    //        QEventLoop loop;
 
-        exittimer->setInterval(timeoutmsec/10);
-        exittimer->start();
+    //        exittimer->setInterval(timeoutmsec/10);
+    //        exittimer->start();
 
-        connect(exittimer, SIGNAL(timeout()), &loop, SLOT(quit()));
-        loop.exec();
+    //        connect(exittimer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    //        loop.exec();
 
-        if( serial1.open(QIODevice::ReadWrite) )
-        {
-            break;
-        }
-        else
-        {
-            b++;
-            if(b==10)
-            {
-                candatainput.clear();
-                break;
-            }
-        }
-    }
+    //        if( serial1.open(QIODevice::ReadWrite) )
+    //        {
+    //            break;
+    //        }
+    //        else
+    //        {
+    //            b++;
+    //            if(b==10)
+    //            {
+    //                candatainput.clear();
+    //                break;
+    //            }
+    //        }
+    //    }
 
 
-    if (!serial1.setBaudRate(115200))
-    {
-    }
+     !serial1.setBaudRate(115200);
 
-    if (!serial1.setDataBits(QSerialPort::Data8))
-    {
-    }
 
-    if (!serial1.setParity(QSerialPort::NoParity))
-    {
-    }
+  serial1.setDataBits(QSerialPort::Data8);
+
+
+serial1.setParity(QSerialPort::NoParity);
+
 
     serial1.setStopBits(QSerialPort::OneStop);
     serial1.setFlowControl(QSerialPort::NoFlowControl);
@@ -214,24 +211,35 @@ serial1.setPortName("COM8");
     serial1.write(candataout);
     candataout.clear();
 
+    if (serial1.bytesAvailable() > 0)
+    {
+        candatainput.append(serial1.readAll());
+
+        //qDebug() << candatainput << " candatainput";
+    }
+
+
+    return candatainput;
+
+
     int a = 0;
     while (candatainput.length()<minresponselenght)
 
     {
         // закомментить если хотим побыстрее но по тайм - ауту будут лаги
-                {
-                    exittimer2 = new QTimer();
-                    QEventLoop loop2;
+        {
+            exittimer2 = new QTimer();
+            QEventLoop loop2;
 
-                    exittimer2->setInterval(timeoutmsec/10);
-                    exittimer2->start();
+            exittimer2->setInterval(timeoutmsec/10);
+            exittimer2->start();
 
-                    connect(exittimer2, SIGNAL(timeout()), &loop2, SLOT(quit()));
-                    loop2.exec();
-                }
-                    if (serial1.bytesAvailable() > 0)
+            connect(exittimer2, SIGNAL(timeout()), &loop2, SLOT(quit()));
+            loop2.exec();
+        }
+        if (serial1.bytesAvailable() > 0)
 
-//        if(serial1.waitForReadyRead(timeoutmsec/10)) // закомментить и раскоментить выше если не хотим лагов при отсутствии ответа, но скорость ответа будет чуть пониже
+            //        if(serial1.waitForReadyRead(timeoutmsec/10)) // закомментить и раскоментить выше если не хотим лагов при отсутствии ответа, но скорость ответа будет чуть пониже
 
         {
             if (serial1.bytesAvailable() > 0)
@@ -257,7 +265,7 @@ serial1.setPortName("COM8");
         }
     }
 
-//    serial1.close();
+    //    serial1.close();
     return candatainput;
 }
 

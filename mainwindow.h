@@ -38,6 +38,17 @@ public:
     void StopTesting();
     
     void StartTesting();
+
+    double result;
+    // calculate two new data points:
+#if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
+    double key = 0;
+#else
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
+
+    //    double key = QDateTime::currentDateTime().toSecsSinceEpoch()/10;
+#endif
+     double lastPointKey = 0;
     
 public slots:
     void ShowMessageBox(QString message);
@@ -47,6 +58,8 @@ public slots:
     void realtimeDataSlot();
     void realtimeDataSlot_2();
 
+
+    void UsartSlot();
 
 
     void updatetimerbutton();
@@ -107,6 +120,9 @@ private:
     bool start;
 
     QTimer dataTimer;
+    QTimer uartTimer;
+
+
     QTimer dataTimer2;
 
     QSerialCANBusLib * sibekiCan;

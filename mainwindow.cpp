@@ -113,7 +113,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupDemo(int demoIndex)
 {
-
     setupRealtimeDataDemo(ui->customPlot);
     ui->customPlot->replot();
 }
@@ -166,7 +165,12 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
-    dataTimer.start(13); // Interval 0 means to refresh as fast as possible
+    dataTimer.start(0); // Interval 0 means to refresh as fast as possible
+
+    connect(&uartTimer, SIGNAL(timeout()), this, SLOT(UsartSlot()));
+    uartTimer.start(155); // Interval 0 means to refresh as fast as possible
+
+
 }
 
 
@@ -257,6 +261,7 @@ void MainWindow::ShowMessageBox(QString message)
 
 void MainWindow::realtimeDataSlot()
 {
+
     double result;
     // calculate two new data points:
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
@@ -268,9 +273,59 @@ void MainWindow::realtimeDataSlot()
 #endif
     static double lastPointKey = 0;
 
+
+
+
+    if (key-lastPointKey > 0.001) // at most add point every 10 ms
+    {
+        ui->customPlot->graph(0)->setData(XData,YData);
+        //                ui->customPlot->graph(0)->addData(key, result);
+        // rescale value (vertical) axis to fit the current data:
+        ui->customPlot->graph(0)->rescaleValueAxis();
+        ui->customPlot->graph(0)->rescaleAxes(false);
+        lastPointKey = key;
+    }
+    // make key axis range scroll with the data (at a constant range size of 8):
+    ui->customPlot->xAxis->setRange(key+0.001, 8, Qt::AlignRight);
+    ui->customPlot->replot();
+
+    // calculate frames per second:
+    static double lastFpsKey;
+    static int frameCount;
+    ++frameCount;
+    if (key-lastFpsKey > 2) // average fps over 2 seconds
+    {
+        ui->statusBar->showMessage(
+                    QString("%1 FPS, Total Data points: ")
+                    .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
+                    .arg(ui->customPlot->graph(0)->data()->count())
+                    , 0);
+        lastFpsKey = key;
+        frameCount = 0;
+    }
+}
+
+void MainWindow::realtimeDataSlot_2()
+{
+    return;
+}
+
+void MainWindow::UsartSlot()
+{
     QByteArray data;
 
-    data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 100);
+    key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
+
+    XData.append(key);
+    YData.append((QDateTime::currentDateTime().toString("ss")).toDouble());
+
+    while (XData.length()>=1000)
+    {
+        XData.removeFirst();
+        YData.removeFirst();
+    }
+
+    data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 10);
 
 
     if (data.isEmpty())
@@ -336,47 +391,9 @@ void MainWindow::realtimeDataSlot()
 
             }
 
-            while (XData.length()>=100)
-            {
-                XData.removeFirst();
-                YData.removeFirst();
-            }
+
         }
     }
-
-
-    if (key-lastPointKey > 0.001) // at most add point every 10 ms
-    {
-        ui->customPlot->graph(0)->setData(XData,YData);
-        //                ui->customPlot->graph(0)->addData(key, result);
-        // rescale value (vertical) axis to fit the current data:
-        ui->customPlot->graph(0)->rescaleValueAxis();
-        ui->customPlot->graph(0)->rescaleAxes(false);
-        lastPointKey = key;
-    }
-    // make key axis range scroll with the data (at a constant range size of 8):
-    ui->customPlot->xAxis->setRange(key+0.001, 8, Qt::AlignRight);
-    ui->customPlot->replot();
-
-    // calculate frames per second:
-    static double lastFpsKey;
-    static int frameCount;
-    ++frameCount;
-    if (key-lastFpsKey > 2) // average fps over 2 seconds
-    {
-        ui->statusBar->showMessage(
-                    QString("%1 FPS, Total Data points: ")
-                    .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
-                    .arg(ui->customPlot->graph(0)->data()->count())
-                    , 0);
-        lastFpsKey = key;
-        frameCount = 0;
-    }
-}
-
-void MainWindow::realtimeDataSlot_2()
-{
-    return;
 }
 
 void MainWindow::updatetimerbutton()
