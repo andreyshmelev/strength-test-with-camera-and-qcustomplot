@@ -54,9 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
         mLayout->addWidget(mCameraViewfinder);
         ui->scrollArea->setLayout(mLayout);
 
-        foreach (const QCameraInfo &cameraInfo, camerainfos) {
-        }
-
         mCameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
 
         QImageEncoderSettings encSettings;
@@ -68,35 +65,33 @@ MainWindow::MainWindow(QWidget *parent) :
         mCamera->setCaptureMode(QCamera::CaptureVideo);
         mCamera->start();
 
-        if (camerainfos.length()>1)
-        {
+//        if (camerainfos.length()>1)
+//        {
 
 
-            mCameraViewfinder2 = new QCameraViewfinder(this);
+//            mCameraViewfinder2 = new QCameraViewfinder(this);
 
-            mCamera2 = new QCamera(camerainfos.at(0), this);
-            mCameraViewfinder2 = new QCameraViewfinder(this);
-            mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
-            mCamera2->setViewfinder(mCameraViewfinder2);
-            mLayout2->addWidget(mCameraViewfinder2);
-            //            ui->scrollArea_2->setLayout(mLayout2);
-
-            foreach (const QCameraInfo &cameraInfo, camerainfos) {
-            }
-
-            mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-
-            QImageEncoderSettings encSettings2;
-            encSettings2.setCodec("image/jpeg");
-            encSettings2.setResolution(1600,1200);
-
-            mCameraImageCapture2->setEncodingSettings(encSettings2);
-
-            mCamera2->setCaptureMode(QCamera::CaptureVideo);
-            mCamera2->start();
+//            mCamera2 = new QCamera(camerainfos.at(0), this);
+//            mCameraViewfinder2 = new QCameraViewfinder(this);
+//            mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
+//            mCamera2->setViewfinder(mCameraViewfinder2);
+//            mLayout2->addWidget(mCameraViewfinder2);
+//            //            ui->scrollArea_2->setLayout(mLayout2);
 
 
-        }
+//            mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+
+//            QImageEncoderSettings encSettings2;
+//            encSettings2.setCodec("image/jpeg");
+//            encSettings2.setResolution(1600,1200);
+
+//            mCameraImageCapture2->setEncodingSettings(encSettings2);
+
+//            mCamera2->setCaptureMode(QCamera::CaptureVideo);
+//            mCamera2->start();
+
+
+//        }
     }
 
     sibekiCan = new QSerialCANBusLib("COM8",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
@@ -118,6 +113,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupDemo(int demoIndex)
 {
+
     setupRealtimeDataDemo(ui->customPlot);
     ui->customPlot->replot();
 }
@@ -274,7 +270,7 @@ void MainWindow::realtimeDataSlot()
 
     QByteArray data;
 
-    data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 150);
+    data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 100);
 
 
     if (data.isEmpty())
@@ -305,6 +301,8 @@ void MainWindow::realtimeDataSlot()
 
             result /= ui->koef->value();
 
+
+//            result = 123.34;
             ui->message->setText(QString("Сила: %1 кг").arg(result));
 
             if (result>=0&&result<=3000000)
@@ -338,7 +336,7 @@ void MainWindow::realtimeDataSlot()
 
             }
 
-            while (XData.length()>=200)
+            while (XData.length()>=100)
             {
                 XData.removeFirst();
                 YData.removeFirst();
@@ -349,8 +347,6 @@ void MainWindow::realtimeDataSlot()
 
     if (key-lastPointKey > 0.001) // at most add point every 10 ms
     {
-
-
         ui->customPlot->graph(0)->setData(XData,YData);
         //                ui->customPlot->graph(0)->addData(key, result);
         // rescale value (vertical) axis to fit the current data:
@@ -378,10 +374,8 @@ void MainWindow::realtimeDataSlot()
     }
 }
 
-
 void MainWindow::realtimeDataSlot_2()
 {
-
     return;
 }
 
@@ -407,14 +401,14 @@ void MainWindow::setStart(bool value)
 
 void MainWindow::on_cyl1forward_clicked()
 {
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 2,2,0, 1, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 2,2,0, 1, 100);
 
 }
 
 void MainWindow::on_cyl1backward_clicked()
 {
 
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 1, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 1, 100);
     qDebug() << data<<" data";
 
 }
@@ -424,7 +418,7 @@ void MainWindow::StopTesting()
     isstarted = false;
     ui->startButton->setText("Старт");
 
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 100);
 
     ui->prednatyagbutton->setEnabled(false);
     ui->startButton->setEnabled(false);
@@ -438,8 +432,8 @@ void MainWindow::StartTesting()
     ui->customPlot->graph(2)->clearData();
 
 
-    XData.clear();
-    YData.clear();
+//    XData.clear();
+//    YData.clear();
 
     myTimer.start();
 
@@ -456,7 +450,7 @@ void MainWindow::StartTesting()
 
 
 
-    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 150);
+    QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 100);
 }
 
 void MainWindow::startstop()
