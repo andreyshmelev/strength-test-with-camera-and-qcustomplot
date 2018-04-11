@@ -155,11 +155,7 @@ if (!serial1.isOpen())
                 serial1.setPortName(port.portName());
 
                 qDebug() << "найден гребаный силикон лабс " << port.portName();
-
-
                 serial1.open(QIODevice::ReadWrite);
-
-
             }
 
 
@@ -169,8 +165,19 @@ if (!serial1.isOpen())
 
     }
 
-    //    serial1.setPortName("ttyAMA0");
 
+
+
+
+if (serial1.errorString() == "Отказано в доступе.")
+{
+
+//    qDebug() << "Говно" ;
+//    qDebug() << "ошибка " << serial1.errorString() ;
+    serial1.clear();
+    serial1.close();
+
+}
 
 
     //qDebug() << serial1.errorString() <<"serial1.errorString()" ;
