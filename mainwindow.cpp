@@ -334,7 +334,7 @@ void MainWindow::MakeStatisticsPDFReport()
     printer.setPaperSize(QPrinter::A4);
     printer.setOutputFileName(fileName);
 
-//    QTextDocument doc;
+    //    QTextDocument doc;
 
     QGraphicsTextItem *doc = new  QGraphicsTextItem ;
 
@@ -354,18 +354,19 @@ void MainWindow::MakeStatisticsPDFReport()
 
     doc->setHtml(a);
 
-//    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
-//    doc.print(&printer);
+    //    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
+    //    doc.print(&printer);
 
 
     QPixmap plotpixmap;
-    plotpixmap = ui->customPlot->toPixmap(200,200,2);
+    plotpixmap = ui->customPlot->toPixmap(1500,800,2);
 
     QGraphicsScene m_Scene;
 
     QPainter painter(&printer);
 
 
+    doc->setY(2000);
     m_Scene.addItem(doc );
 
 
@@ -383,21 +384,23 @@ void MainWindow::MakeStatisticsPDFReport()
 
     m_Scene.render(&painter);
 
-    fileName.replace("pdf","png");
-
-
-
-    QFile file(fileName+ ".png" );
-
-    if (!file.open(QIODevice::WriteOnly))
+    if (0)
     {
-        qDebug() << file.errorString();
-    } else {
-        ui->customPlot->savePng(fileName);
+        fileName.replace("pdf","png");
 
 
-        qDebug() << "PNG OK";
+        QFile file(fileName+ ".png" );
 
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            qDebug() << file.errorString();
+        } else {
+            ui->customPlot->savePng(fileName);
+
+
+            qDebug() << "PNG OK";
+
+        }
     }
 }
 
@@ -460,27 +463,27 @@ void MainWindow::UsartSlot()
                 YData.append(result);
                 if (isstarted) {
 
-                    qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << result << "result";
-
-                    qDebug() << QDateTime::currentDateTime().toString("mm:ss:zzz") << key << "key";
-
-
-
-                    QFile file( this->filename );
-                    if ( file.open(QIODevice::Append|QIODevice::Text) )
+                    if(0)
                     {
-                        QTextStream stream( &file );
+                        QFile file( this->filename );
+                        if ( file.open(QIODevice::Append|QIODevice::Text) )
+                        {
+                            QTextStream stream( &file );
 
 
-                        //                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
-                        QString sss = QString("%1\n").arg(QString::number(result));
+                            //                    QString sss = QString("%1,%2\n").arg(QDateTime::currentDateTime().toString("hhmmss"),  QString::number(result));
+                            QString sss = QString("%1\n").arg(QString::number(result));
 
-                        stream << sss;
+                            stream << sss;
+                        }
+                        else
+                        {    qDebug() << "file closed";
+                        }
+
+
+                        file.close();
                     }
-                    else
-                    {    qDebug() << "file closed";
-                    }
-                    file.close();
+
                 }
 
             }
