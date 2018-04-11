@@ -334,7 +334,9 @@ void MainWindow::MakeStatisticsPDFReport()
     printer.setPaperSize(QPrinter::A4);
     printer.setOutputFileName(fileName);
 
-    QTextDocument doc;
+//    QTextDocument doc;
+
+    QGraphicsTextItem *doc = new  QGraphicsTextItem ;
 
     stoptime = QDateTime::currentDateTime();
 
@@ -350,10 +352,10 @@ void MainWindow::MakeStatisticsPDFReport()
 
     qDebug() << starttime.toString("dd-MM-yy, hh:mm:ss")<< stoptime.toString("dd-MM-yy, hh:mm:ss")<<   QString::number(ui->prednatyagvalue->value()) <<  QString::number(ui->worktimespinBox->value()) << QString::number(ui->holdtimespinBox->value());
 
-    doc.setHtml(a);
+    doc->setHtml(a);
 
-    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
-    doc.print(&printer);
+//    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
+//    doc.print(&printer);
 
 
     QPixmap plotpixmap;
@@ -362,6 +364,11 @@ void MainWindow::MakeStatisticsPDFReport()
     QGraphicsScene m_Scene;
 
     QPainter painter(&printer);
+
+
+    m_Scene.addItem(doc );
+
+
 
     //    QPixmap *pix = new QPixmap(500,500);
     QGraphicsPixmapItem* item(m_Scene.addPixmap(plotpixmap)); // Save the returned item
@@ -372,6 +379,8 @@ void MainWindow::MakeStatisticsPDFReport()
     //    paint->setPen(*(new QColor(255,34,255,255)));
     //    paint->drawRect(15,15,100,100);
     item->setPixmap(plotpixmap); // Added this line
+
+
     m_Scene.render(&painter);
 
     fileName.replace("pdf","png");
