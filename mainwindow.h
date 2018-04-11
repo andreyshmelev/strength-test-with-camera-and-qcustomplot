@@ -103,8 +103,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-
-
     QTime myTimer;
 
     QTime msec100Timer;
@@ -129,6 +127,16 @@ private:
     QTimer dataTimer2;
 
     QSerialCANBusLib * sibekiCan;
+
+    QDateTime starttime;
+
+    QDateTime stoptime;
+
+signals:
+
+    void MakeReport();
+
+
 };
 
 #endif // MAINWINDOW_H

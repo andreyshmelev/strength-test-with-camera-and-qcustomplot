@@ -103,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->voltvalue->setText(QString::number( a/100    ) + " V");
 
 
+    connect(this, SIGNAL(MakeReport()), this, SLOT(MakeStatisticsPDFReport()) );
 
 }
 
@@ -328,18 +329,37 @@ void MainWindow::MakeStatisticsPDFReport()
     QString a = (QString("<h1 style=\"color: #5e9ca0; text-align: center;\">Отчет об испытании</h1>\
                          <h2 style=\"color: #2e6c80; text-align: center;\">за период:</h2>\
             <h2 style=\"color: #2e6c80; text-align: center;\">%1 - %2</h2>\
-            <p><strong>Бизнес - процесс: <span style=\"color: #ff0000;\">%3</span></strong></p>\
-            <p><strong>Препарат: <span style=\"color: #ff0000;\">%4</span></strong></p>\
-            <p><strong>Партия:&nbsp;<span style=\"color: #ff0000;\">%5</span></strong></p>\
-            <p><strong>GTIN:&nbsp;<span style=\"color: #ff0000;\">%6</span></strong></p>\
-            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%7</span></strong></p>\
-            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%8</span></strong></p>\
-            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%9</span></strong></p>"));
+            <p><strong>Сила преднатяга: <span style=\"color: #ff0000;\">%3</span></strong></p>\
+            <p><strong>Заданная сила испытания:<span style=\"color: #ff0000;\">%4</span></strong></p>\
+            <p><strong>Заданное время подхода:&nbsp;<span style=\"color: #ff0000;\">%5</span></strong></p>\
+            <p><strong>Заданное время удержания:&nbsp;<span style=\"color: #ff0000;\">%6</span></strong></p>\
+            <p><strong>Максимальная сила испытания:&nbsp;<span style=\"color: #ff0000;\">%7</span></strong></p>\
+            "));
 
     a.append(QString("<p><span style=\"color: #ff0000;\"><strong>%1</strong></span></p>"));
     doc.setHtml(a);
+
     doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
     doc.print(&printer);
+
+
+
+    fileName.replace("pdf","png");
+
+
+
+    QFile file(fileName+ ".png" );
+
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        qDebug() << file.errorString();
+    } else {
+        ui->customPlot->savePng(fileName);
+
+
+        qDebug() << "PNG OK";
+
+    }
 }
 
 void MainWindow::UsartSlot()
@@ -467,7 +487,8 @@ void MainWindow::on_cyl1backward_clicked()
 void MainWindow::StopTesting()
 {
 
-    isstarted = false;
+
+
     ui->startButton->setText("Старт");
 
     QByteArray data = sibekiCan->SendDataToCanBus(1, 1,0,0, 6, 100);
@@ -475,8 +496,12 @@ void MainWindow::StopTesting()
     ui->prednatyagbutton->setEnabled(false);
     ui->startButton->setEnabled(false);
 
-    MakeStatisticsPDFReport();
+    if (isstarted)
+    {
+        emit MakeReport();
+    }
 
+    isstarted = false;
 
 }
 
