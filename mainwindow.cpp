@@ -316,6 +316,16 @@ void MainWindow::realtimeDataSlot_2()
 
 void MainWindow::MakeStatisticsPDFReport()
 {
+
+    QVector<double> YDatatemp ;
+
+    YDatatemp = YData;
+
+
+    qSort(YDatatemp.begin(), YDatatemp.end(), qGreater<float>());
+    float maxValue = YDatatemp[0];
+
+
     QString fileName = QFileDialog::getSaveFileName((QWidget* )0, "Сохранить отчет об испытании", QString( "Отчет об испытании " +  QDateTime::currentDateTime().toString("dd-MM-yyyy hh.mm.ss")), QString("*.pdf"));
     if (QFileInfo(fileName).suffix().isEmpty()) { fileName.append(".pdf"); }
 
@@ -326,17 +336,20 @@ void MainWindow::MakeStatisticsPDFReport()
 
     QTextDocument doc;
 
+    stoptime = QDateTime::currentDateTime();
+
     QString a = (QString("<h1 style=\"color: #5e9ca0; text-align: center;\">Отчет об испытании</h1>\
                          <h2 style=\"color: #2e6c80; text-align: center;\">за период:</h2>\
             <h2 style=\"color: #2e6c80; text-align: center;\">%1 - %2</h2>\
-            <p><strong>Сила преднатяга: <span style=\"color: #ff0000;\">%3</span></strong></p>\
-            <p><strong>Заданная сила испытания:<span style=\"color: #ff0000;\">%4</span></strong></p>\
-            <p><strong>Заданное время подхода:&nbsp;<span style=\"color: #ff0000;\">%5</span></strong></p>\
-            <p><strong>Заданное время удержания:&nbsp;<span style=\"color: #ff0000;\">%6</span></strong></p>\
-            <p><strong>Максимальная сила испытания:&nbsp;<span style=\"color: #ff0000;\">%7</span></strong></p>\
-            "));
+            <p><strong>Заданная сила преднатяга: <span style=\"color: #ff0000;\">%3 кг</span></strong></p>\
+            <p><strong>Заданная сила испытания: <span style=\"color: #ff0000;\">%4 кг</span></strong></p>\
+            <p><strong>Заданное время подхода: &nbsp;<span style=\"color: #ff0000;\">%5 сек.</span></strong></p>\
+            <p><strong>Заданное время удержания: &nbsp;<span style=\"color: #ff0000;\">%6 сек.</span></strong></p>\
+            <p><strong>Максимальная сила за время испытания: &nbsp;<span style=\"color: #ff0000;\">%7 кг</span></strong></p>").arg(starttime.toString("dd-MM-yy, hh:mm:ss"), stoptime.toString("dd-MM-yy, hh:mm:ss"),  QString::number(ui->prednatyagvalue->value()),  QString::number(ui->MaxForseSpinBox->value()) , QString::number(ui->worktimespinBox->value()) ,QString::number(ui->holdtimespinBox->value()), QString::number(maxValue)) ); //, QString::number(maxValue)
 
-    a.append(QString("<p><span style=\"color: #ff0000;\"><strong>%1</strong></span></p>"));
+
+    qDebug() << starttime.toString("dd-MM-yy, hh:mm:ss")<< stoptime.toString("dd-MM-yy, hh:mm:ss")<<   QString::number(ui->prednatyagvalue->value()) <<  QString::number(ui->worktimespinBox->value()) << QString::number(ui->holdtimespinBox->value());
+
     doc.setHtml(a);
 
     doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
@@ -374,10 +387,10 @@ void MainWindow::UsartSlot()
         YData.removeFirst();
     }
 
-//    XData.append(key);
-//    YData.append(result++);
+    //    XData.append(key);
+    //    YData.append(result++);
 
-//return;
+    //return;
 
 
     data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 10);
@@ -412,7 +425,7 @@ void MainWindow::UsartSlot()
             result /= ui->koef->value();
 
 
-//            result = 123.34;
+            //            result = 123.34;
             ui->message->setText(QString("Сила: %1 кг").arg(result));
 
             if (result>=0&&result<=3000000)
@@ -513,8 +526,8 @@ void MainWindow::StartTesting()
     ui->customPlot->graph(2)->clearData();
 
 
-//    XData.clear();
-//    YData.clear();
+    //    XData.clear();
+    //    YData.clear();
 
     myTimer.start();
 
@@ -532,6 +545,8 @@ void MainWindow::StartTesting()
 
 
     QByteArray data = sibekiCan->SendDataToCanBus(1, 1,1,0, 6, 100);
+
+
 }
 
 void MainWindow::startstop()
@@ -667,10 +682,18 @@ void MainWindow::on_prednatyagbutton_clicked()
 
     ui->startButton->setEnabled(true);
 
+    starttime= QDateTime::currentDateTime();
 }
 
 void MainWindow::on_STOPBUTTON_clicked()
 {
+    //    выбираем 5 ольт
+    sibekiCan->SendDataToCanBus(1, 4, 500, 0, 6, 500);
+    // сдвигаем немного влево цилиндр чтоб ослабить давление
+    sibekiCan->SendDataToCanBus(1, 2, 0, 0, 6, 100);
+
+
+
     StopTesting();
     StopTesting();
     StopTesting();
