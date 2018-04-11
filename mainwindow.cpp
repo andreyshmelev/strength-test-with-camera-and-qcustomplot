@@ -282,11 +282,13 @@ void MainWindow::realtimeDataSlot()
         //                ui->customPlot->graph(0)->addData(key, result);
         // rescale value (vertical) axis to fit the current data:
         ui->customPlot->graph(0)->rescaleValueAxis();
-        ui->customPlot->graph(0)->rescaleAxes(false);
+        ui->customPlot->graph(0)->rescaleAxes(true);
         lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
     ui->customPlot->xAxis->setRange(key+0.001, 8, Qt::AlignRight);
+
+    ui->customPlot->yAxis->rescale();
     ui->customPlot->replot();
 
     // calculate frames per second:
