@@ -144,9 +144,31 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
     //    QSerialPort serial1 ;
 
 
+if (!serial1.isOpen())
+    {
+        Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts()) {
 
 
-    serial1.setPortName("COM8");
+            if (port.manufacturer() == "Silicon Laboratories")
+            {
+
+                serial1.setPortName(port.portName());
+
+                qDebug() << "найден гребаный силикон лабс " << port.portName();
+
+
+                serial1.open(QIODevice::ReadWrite);
+
+
+            }
+
+
+
+        }
+
+
+    }
+
     //    serial1.setPortName("ttyAMA0");
 
 
@@ -154,8 +176,6 @@ QByteArray QSerialCANBusLib::SendDataToCanBus(quint16 unit, quint16 command,  qu
     //qDebug() << serial1.errorString() <<"serial1.errorString()" ;
     QByteArray candataout;
     QByteArray candatainput;
-
-    serial1.open(QIODevice::ReadWrite);
 
     int b = 0;
 
