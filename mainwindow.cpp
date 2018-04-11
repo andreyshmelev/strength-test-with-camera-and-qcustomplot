@@ -356,6 +356,23 @@ void MainWindow::MakeStatisticsPDFReport()
     doc.print(&printer);
 
 
+    QPixmap plotpixmap;
+    plotpixmap = ui->customPlot->toPixmap(200,200,2);
+
+    QGraphicsScene m_Scene;
+
+    QPainter painter(&printer);
+
+    //    QPixmap *pix = new QPixmap(500,500);
+    QGraphicsPixmapItem* item(m_Scene.addPixmap(plotpixmap)); // Save the returned item
+
+    //    QPainter *paint = new QPainter(&plotpixmap);
+
+
+    //    paint->setPen(*(new QColor(255,34,255,255)));
+    //    paint->drawRect(15,15,100,100);
+    item->setPixmap(plotpixmap); // Added this line
+    m_Scene.render(&painter);
 
     fileName.replace("pdf","png");
 
