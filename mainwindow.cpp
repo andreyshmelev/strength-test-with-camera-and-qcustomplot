@@ -168,7 +168,7 @@ void MainWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
     dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 
     connect(&uartTimer, SIGNAL(timeout()), this, SLOT(UsartSlot()));
-    uartTimer.start(155); // Interval 0 means to refresh as fast as possible
+    uartTimer.start(50); // Interval 0 means to refresh as fast as possible
 
 
 }
@@ -312,6 +312,36 @@ void MainWindow::realtimeDataSlot_2()
     return;
 }
 
+
+void MainWindow::MakeStatisticsPDFReport()
+{
+    QString fileName = QFileDialog::getSaveFileName((QWidget* )0, "Сохранить отчет об испытании", QString( "Отчет об испытании " +  QDateTime::currentDateTime().toString("dd-MM-yyyy hh.mm.ss")), QString("*.pdf"));
+    if (QFileInfo(fileName).suffix().isEmpty()) { fileName.append(".pdf"); }
+
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName(fileName);
+
+    QTextDocument doc;
+
+    QString a = (QString("<h1 style=\"color: #5e9ca0; text-align: center;\">Отчет об испытании</h1>\
+                         <h2 style=\"color: #2e6c80; text-align: center;\">за период:</h2>\
+            <h2 style=\"color: #2e6c80; text-align: center;\">%1 - %2</h2>\
+            <p><strong>Бизнес - процесс: <span style=\"color: #ff0000;\">%3</span></strong></p>\
+            <p><strong>Препарат: <span style=\"color: #ff0000;\">%4</span></strong></p>\
+            <p><strong>Партия:&nbsp;<span style=\"color: #ff0000;\">%5</span></strong></p>\
+            <p><strong>GTIN:&nbsp;<span style=\"color: #ff0000;\">%6</span></strong></p>\
+            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%7</span></strong></p>\
+            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%8</span></strong></p>\
+            <p><strong>&nbsp;<span style=\"color: #ff0000;\">%9</span></strong></p>"));
+
+    a.append(QString("<p><span style=\"color: #ff0000;\"><strong>%1</strong></span></p>"));
+    doc.setHtml(a);
+    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
+    doc.print(&printer);
+}
+
 void MainWindow::UsartSlot()
 {
     QByteArray data;
@@ -323,6 +353,12 @@ void MainWindow::UsartSlot()
         XData.removeFirst();
         YData.removeFirst();
     }
+
+//    XData.append(key);
+//    YData.append(result++);
+
+//return;
+
 
     data = sibekiCan->SendDataToCanBus(0, 0 , 0 , 0, 6, 10);
 
@@ -438,6 +474,10 @@ void MainWindow::StopTesting()
 
     ui->prednatyagbutton->setEnabled(false);
     ui->startButton->setEnabled(false);
+
+    MakeStatisticsPDFReport();
+
+
 }
 
 void MainWindow::StartTesting()
@@ -543,8 +583,25 @@ void MainWindow::on_cyl1back_clicked()
     QByteArray data = sibekiCan->SendDataToCanBus(1, 2, 2, 0, 6, 100);
 }
 
+void MainWindow::ClearGraphics()
+{
+    ui->customPlot->graph(0)->clearData();
+    ui->customPlot->graph(1)->clearData();
+    ui->customPlot->graph(2)->clearData();
+
+
+    XData.clear();
+    YData.clear();
+}
+
 void MainWindow::on_sendparamsbutton_clicked()
 {
+
+
+    ClearGraphics();
+
+
+
     QByteArray data ;
 
 

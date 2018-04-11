@@ -50,6 +50,8 @@ public:
 #endif
      double lastPointKey = 0;
     
+     void ClearGraphics();
+
 public slots:
     void ShowMessageBox(QString message);
 
@@ -66,6 +68,7 @@ public slots:
 
 
 
+    void MakeStatisticsPDFReport();
 private slots:
     void on_pushButton_clicked();
 
