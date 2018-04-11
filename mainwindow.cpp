@@ -316,8 +316,8 @@ void MainWindow::UsartSlot()
 
     key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
 
-    XData.append(key);
-    YData.append((QDateTime::currentDateTime().toString("ss")).toDouble());
+//    XData.append(key);
+//    YData.append((QDateTime::currentDateTime().toString("ss")).toDouble());
 
     while (XData.length()>=1000)
     {
