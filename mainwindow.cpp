@@ -65,33 +65,33 @@ MainWindow::MainWindow(QWidget *parent) :
         mCamera->setCaptureMode(QCamera::CaptureVideo);
         mCamera->start();
 
-//        if (camerainfos.length()>1)
-//        {
+        if (camerainfos.length()>1)
+        {
 
 
-//            mCameraViewfinder2 = new QCameraViewfinder(this);
+            mCameraViewfinder2 = new QCameraViewfinder(this);
 
-//            mCamera2 = new QCamera(camerainfos.at(0), this);
-//            mCameraViewfinder2 = new QCameraViewfinder(this);
-//            mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
-//            mCamera2->setViewfinder(mCameraViewfinder2);
-//            mLayout2->addWidget(mCameraViewfinder2);
-//            //            ui->scrollArea_2->setLayout(mLayout2);
-
-
-//            mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-
-//            QImageEncoderSettings encSettings2;
-//            encSettings2.setCodec("image/jpeg");
-//            encSettings2.setResolution(1600,1200);
-
-//            mCameraImageCapture2->setEncodingSettings(encSettings2);
-
-//            mCamera2->setCaptureMode(QCamera::CaptureVideo);
-//            mCamera2->start();
+            mCamera2 = new QCamera(camerainfos.at(0), this);
+            mCameraViewfinder2 = new QCameraViewfinder(this);
+            mCameraImageCapture2 = new QCameraImageCapture(mCamera2,this);
+            mCamera2->setViewfinder(mCameraViewfinder2);
+            mLayout->addWidget(mCameraViewfinder2);
+            //            ui->scrollArea_2->setLayout(mLayout2);
 
 
-//        }
+            mCameraImageCapture2->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+
+            QImageEncoderSettings encSettings2;
+            encSettings2.setCodec("image/jpeg");
+            encSettings2.setResolution(1600,1200);
+
+            mCameraImageCapture2->setEncodingSettings(encSettings2);
+
+            mCamera2->setCaptureMode(QCamera::CaptureVideo);
+            mCamera2->start();
+
+
+        }
     }
 
     sibekiCan = new QSerialCANBusLib("COM8",460800,QSerialPort::Data8,QSerialPort::NoParity,QSerialPort::OneStop,QSerialPort::NoFlowControl);
@@ -315,9 +315,6 @@ void MainWindow::UsartSlot()
     QByteArray data;
 
     key = QDateTime::currentDateTime().toMSecsSinceEpoch()/10000.0;
-
-//    XData.append(key);
-//    YData.append((QDateTime::currentDateTime().toString("ss")).toDouble());
 
     while (XData.length()>=1000)
     {
